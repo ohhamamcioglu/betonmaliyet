@@ -114,8 +114,8 @@ export default function QuickLookup({ calculatedData, inputs, setInputs }) {
           </div>
 
           {/* 3. Döküm Konumu & Şantiye Mesafesi */}
-          <div>
-            <div className="flex justify-between items-center mb-1.5">
+          <div className="space-y-1.5">
+            <div className="flex justify-between items-center">
               <label className="block text-xs font-semibold uppercase text-slate-400">
                 3. Şantiye / Döküm Yeri Seçimi (Afyon)
               </label>
@@ -124,27 +124,47 @@ export default function QuickLookup({ calculatedData, inputs, setInputs }) {
               </span>
             </div>
 
-            <select
-              onChange={handleLocationSelect}
-              className="w-full bg-slate-900 text-sky-300 font-bold text-xs p-2.5 rounded-lg border border-slate-800 focus:outline-none focus:border-sky-400"
-            >
-              <option value="">📍 Şantiye Konumu Seçin (Afyonkarahisar / Bolvadin & Tüm İlçeler)</option>
-              {Object.entries(
-                AFYON_LOCATIONS.reduce((acc, loc) => {
-                  acc[loc.category] = acc[loc.category] || [];
-                  acc[loc.category].push(loc);
-                  return acc;
-                }, {})
-              ).map(([category, locations]) => (
-                <optgroup key={category} label={`--- ${category} ---`}>
-                  {locations.map(loc => (
-                    <option key={loc.id} value={loc.id}>
-                      {loc.name} ({loc.distanceKm} km)
-                    </option>
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-2">
+              {/* Dropdown Select (8 Cols) */}
+              <div className="sm:col-span-7">
+                <select
+                  onChange={handleLocationSelect}
+                  className="w-full bg-slate-900 text-sky-300 font-bold text-xs p-2 rounded-lg border border-slate-800 focus:outline-none focus:border-sky-400"
+                >
+                  <option value="">📍 Listeden Konum Seç...</option>
+                  {Object.entries(
+                    AFYON_LOCATIONS.reduce((acc, loc) => {
+                      acc[loc.category] = acc[loc.category] || [];
+                      acc[loc.category].push(loc);
+                      return acc;
+                    }, {})
+                  ).map(([category, locations]) => (
+                    <optgroup key={category} label={`--- ${category} ---`}>
+                      {locations.map(loc => (
+                        <option key={loc.id} value={loc.id}>
+                          {loc.name} ({loc.distanceKm} km)
+                        </option>
+                      ))}
+                    </optgroup>
                   ))}
-                </optgroup>
-              ))}
-            </select>
+                </select>
+              </div>
+
+              {/* Manual Input (5 Cols) */}
+              <div className="sm:col-span-5 flex items-center space-x-1.5 bg-slate-900 px-2.5 py-1.5 rounded-lg border border-slate-800 focus-within:border-amber-500/50">
+                <span className="text-[10px] text-slate-400 font-semibold shrink-0">Manuel:</span>
+                <input
+                  type="number"
+                  step="0.5"
+                  placeholder="km"
+                  value={inputs.dokumMesafesi ?? ''}
+                  onChange={(e) => setInputs(prev => ({ ...prev, dokumMesafesi: parseFloat(e.target.value) || 0 }))}
+                  className="w-full bg-transparent text-amber-400 font-mono font-bold text-xs focus:outline-none text-right"
+                  title="Listede olmayan özel mesafe için km değerini manuel girin"
+                />
+                <span className="text-[11px] text-slate-400 font-bold">km</span>
+              </div>
+            </div>
           </div>
 
           {/* Kâr Oranı */}
