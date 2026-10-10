@@ -223,6 +223,9 @@ export default function App() {
       {/* Footer */}
       <footer className="border-t border-slate-900 bg-slate-950 py-6 mt-12 no-print">
         <div className="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 space-y-1">
+          <p className="font-bold text-amber-400/90 text-sm">
+            Geliştiren: Ömer Hilmi Hamamcıoğlu
+          </p>
           <p className="font-semibold text-slate-400">
             Beton Maliyet & Satış Fiyatı Hesaplama Sistemi © 2026
           </p>

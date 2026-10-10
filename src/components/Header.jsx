@@ -23,12 +23,15 @@ export default function Header({
               <Building2 className="w-6 h-6 text-slate-950 stroke-[2.5]" />
             </div>
             <div>
-              <div className="flex items-center space-x-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-xl font-bold tracking-tight text-white font-sans">
                   Beton Maliyet & Satış Fiyatı Paneli
                 </h1>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-gradient-to-r from-amber-500/20 to-amber-600/20 text-amber-300 border border-amber-500/30 shadow-sm">
+                  👑 Ömer Hilmi Hamamcıoğlu
+                </span>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  Dinamik Canlı Veri v1.1
+                  v1.1
                 </span>
               </div>
               <p className="text-xs text-slate-400 font-medium">
