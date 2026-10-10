@@ -20,7 +20,7 @@ export default function Header({
           {/* Logo & Title */}
           <div className="flex items-center space-x-3">
             <div className="h-11 px-2.5 py-1 rounded-xl bg-white flex items-center justify-center shadow-lg ring-1 ring-slate-700">
-              <img src="/images/Resim1.jpg" alt="MİG Malaklar Logo" className="h-9 w-auto object-contain" />
+              <img src="/images/image1.jpeg" alt="MİG Malaklar Logo" className="h-9 w-auto object-contain" />
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2">
