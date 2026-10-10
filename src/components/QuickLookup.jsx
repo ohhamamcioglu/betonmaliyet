@@ -158,8 +158,16 @@ export default function QuickLookup({ calculatedData, inputs, setInputs }) {
                   step="0.5"
                   placeholder="km"
                   value={inputs.dokumMesafesi ?? ''}
-                  onChange={(e) => setInputs(prev => ({ ...prev, dokumMesafesi: parseFloat(e.target.value) || 0 }))}
-                  className="w-full bg-transparent text-amber-400 font-mono font-bold text-xs focus:outline-none text-right"
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '' || val === undefined) {
+                      setInputs(prev => ({ ...prev, dokumMesafesi: '' }));
+                    } else {
+                      const num = parseFloat(val);
+                      setInputs(prev => ({ ...prev, dokumMesafesi: isNaN(num) ? '' : num }));
+                    }
+                  }}
+                  className="w-full bg-transparent text-amber-400 font-mono font-bold text-xs focus:outline-none text-right placeholder:text-slate-600"
                   title="Listede olmayan özel mesafe için km değerini manuel girin"
                 />
                 <span className="text-[11px] text-slate-400 font-bold">km</span>
