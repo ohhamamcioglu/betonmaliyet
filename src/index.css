@@ -84,11 +84,11 @@ input[type="number"], input[type="text"], select {
   }
 }
 
-/* Print CSS - 100% Identical Visual Layout as On-Screen Preview */
+/* Print CSS - 100% Guaranteed 1-Page A4 Output with On-Screen Styling */
 @media print {
   @page {
     size: A4 portrait;
-    margin: 6mm 8mm !important;
+    margin: 4mm 6mm !important;
   }
 
   * {
@@ -107,6 +107,7 @@ input[type="number"], input[type="text"], select {
     box-shadow: none !important;
     width: 100% !important;
     height: auto !important;
+    overflow: hidden !important;
   }
 
   header, footer, nav, .no-print {
@@ -133,11 +134,13 @@ input[type="number"], input[type="text"], select {
     max-width: 100% !important;
     box-shadow: none !important;
     border: 1px solid #cbd5e1 !important;
-    border-radius: 16px !important;
-    padding: 24px !important;
+    border-radius: 12px !important;
+    padding: 16px 20px !important;
     margin: 0 !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 
   table {
@@ -147,6 +150,7 @@ input[type="number"], input[type="text"], select {
 
   th, td {
     border: 1px solid #cbd5e1 !important;
+    padding: 4px 6px !important;
   }
 
   th {

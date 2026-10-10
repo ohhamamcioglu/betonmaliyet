@@ -648,33 +648,33 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
       </div>
 
       {/* Official Offer Document Printable View */}
-      <div className="printable-quote-container bg-white text-slate-950 p-6 sm:p-8 rounded-2xl border border-slate-300 shadow-2xl print:shadow-none print:p-6 print:rounded-2xl print:border print:border-slate-300">
+      <div className="printable-quote-container bg-white text-slate-950 p-5 sm:p-7 rounded-2xl border border-slate-300 shadow-2xl">
         
         {/* Document Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start border-b-2 border-slate-900 pb-4 mb-4 gap-4">
-          <div className="flex items-start space-x-4">
-            <img src="/images/image1.jpeg" alt="MİG Malaklar Logo" className="h-16 w-auto object-contain shrink-0 mt-1" />
+        <div className="flex flex-col sm:flex-row justify-between items-start border-b-2 border-slate-900 pb-3 mb-3 gap-3">
+          <div className="flex items-start space-x-3 sm:space-x-4">
+            <img src="/images/image1.jpeg" alt="MİG Malaklar Logo" className="h-14 sm:h-16 w-auto object-contain shrink-0 mt-0.5" />
             <div>
-              <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-black bg-amber-500 text-slate-950 uppercase tracking-wider mb-1">
+              <span className="inline-block px-2 py-0.5 rounded text-[9px] font-black bg-amber-500 text-slate-950 uppercase tracking-wider mb-0.5">
                 RESMİ TEKLİF BELGESİ
               </span>
-              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-950 font-sans uppercase">
+              <h1 className="text-lg sm:text-xl font-black tracking-tight text-slate-950 font-sans uppercase leading-tight">
                 MALAKLAR İNŞAAT TAAHHÜT GIDA MADEN SANAYİ VE TİCARET A.Ş.
               </h1>
-              <p className="text-xs font-bold text-amber-800 tracking-wide mt-0.5 uppercase">
+              <p className="text-[11px] font-bold text-amber-800 tracking-wide uppercase mt-0.5">
                 HAZIR BETON SANTRALİ ÜRETİM & SEVKİYAT KOORDİNATÖRLÜĞÜ
               </p>
-              <div className="text-[11px] text-slate-700 font-medium mt-1 space-y-0.5">
+              <div className="text-[10.5px] text-slate-700 font-medium mt-1 space-y-0.5 leading-snug">
                 <p><strong>Merkez Adres:</strong> Susuz Beldesi, Sakarya Mahallesi, Hayat Caddesi No:9 AFYONKARAHİSAR</p>
-                <p><strong>Tesis / Santral:</strong> Selçuklu Mah. M27V+MQ, 03300 Bolvadin / AFYONKARAHİSAR</p>
+                <p><strong>Tesis / Santral:</strong> Malaklar Hazır Beton - Selçuklu Mah. (Plus Kod: M27V+MQ), 03300 Bolvadin / AFYONKARAHİSAR</p>
                 <p><strong>Tel:</strong> 0.272.221.12.12 – 0.272.221.15.75 &nbsp;|&nbsp; <strong>V.D. / No:</strong> TINAZTEPE V.D. - 611 052 27 44</p>
               </div>
             </div>
           </div>
-          <div className="text-left sm:text-right text-xs font-mono shrink-0 bg-slate-100 p-3 rounded-lg border border-slate-300">
-            <p className="font-black text-slate-950 text-sm">Teklif No: {currentOfferNo}</p>
-            <p className="text-slate-800 font-bold mt-1">Tarih: {new Date(offerDate).toLocaleDateString('tr-TR')}</p>
-            <p className="text-slate-700 font-semibold">Geçerlilik: {validityDays} Gün</p>
+          <div className="text-left sm:text-right text-xs font-mono shrink-0 bg-slate-100 p-2.5 rounded-lg border border-slate-300">
+            <p className="font-black text-slate-950 text-xs sm:text-sm">Teklif No: {currentOfferNo}</p>
+            <p className="text-slate-800 font-bold mt-0.5 text-[11px]">Tarih: {new Date(offerDate).toLocaleDateString('tr-TR')}</p>
+            <p className="text-slate-700 font-semibold text-[11px]">Geçerlilik: {validityDays} Gün</p>
           </div>
         </div>
 
