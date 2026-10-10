@@ -648,94 +648,94 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
       </div>
 
       {/* Official Offer Document Printable View */}
-      <div className="printable-quote-container bg-white text-slate-950 p-8 sm:p-10 rounded-2xl border border-slate-300 shadow-2xl print:shadow-none print:border-none print:p-0">
+      <div className="printable-quote-container bg-white text-slate-950 p-6 sm:p-8 rounded-2xl border border-slate-300 shadow-2xl print:shadow-none print:p-6 print:rounded-2xl print:border print:border-slate-300">
         
         {/* Document Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start border-b-2 border-slate-900 pb-5 mb-4 gap-4 print:pb-2 print:mb-2 print:gap-2">
-          <div className="flex items-start space-x-4 print:space-x-3">
-            <img src="/images/image1.jpeg" alt="MİG Malaklar Logo" className="h-16 w-auto object-contain shrink-0 mt-1 print:h-12" />
+        <div className="flex flex-col sm:flex-row justify-between items-start border-b-2 border-slate-900 pb-4 mb-4 gap-4">
+          <div className="flex items-start space-x-4">
+            <img src="/images/image1.jpeg" alt="MİG Malaklar Logo" className="h-16 w-auto object-contain shrink-0 mt-1" />
             <div>
-              <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-black bg-amber-500 text-slate-950 uppercase tracking-wider mb-1 print:text-[8px] print:px-1.5 print:py-0">
+              <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-black bg-amber-500 text-slate-950 uppercase tracking-wider mb-1">
                 RESMİ TEKLİF BELGESİ
               </span>
-              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-950 font-sans uppercase print:text-sm">
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-950 font-sans uppercase">
                 MALAKLAR İNŞAAT TAAHHÜT GIDA MADEN SANAYİ VE TİCARET A.Ş.
               </h1>
-              <p className="text-xs font-bold text-amber-800 tracking-wide mt-0.5 uppercase print:text-[9px] print:mt-0">
+              <p className="text-xs font-bold text-amber-800 tracking-wide mt-0.5 uppercase">
                 HAZIR BETON SANTRALİ ÜRETİM & SEVKİYAT KOORDİNATÖRLÜĞÜ
               </p>
-              <div className="text-[11px] text-slate-700 font-medium mt-1 space-y-0.5 print:text-[8pt] print:mt-0.5 print:space-y-0">
+              <div className="text-[11px] text-slate-700 font-medium mt-1 space-y-0.5">
                 <p><strong>Merkez Adres:</strong> Susuz Beldesi, Sakarya Mahallesi, Hayat Caddesi No:9 AFYONKARAHİSAR</p>
                 <p><strong>Tesis / Santral:</strong> Selçuklu Mah. M27V+MQ, 03300 Bolvadin / AFYONKARAHİSAR</p>
                 <p><strong>Tel:</strong> 0.272.221.12.12 – 0.272.221.15.75 &nbsp;|&nbsp; <strong>V.D. / No:</strong> TINAZTEPE V.D. - 611 052 27 44</p>
               </div>
             </div>
           </div>
-          <div className="text-left sm:text-right text-xs font-mono shrink-0 bg-slate-100 p-3 rounded-lg border border-slate-300 print:bg-transparent print:border-none print:p-0 print:text-left print:text-[8pt]">
-            <p className="font-black text-slate-950 text-sm print:text-[9pt]">Teklif No: {currentOfferNo}</p>
-            <p className="text-slate-800 font-bold mt-1 print:mt-0">Tarih: {new Date(offerDate).toLocaleDateString('tr-TR')}</p>
+          <div className="text-left sm:text-right text-xs font-mono shrink-0 bg-slate-100 p-3 rounded-lg border border-slate-300">
+            <p className="font-black text-slate-950 text-sm">Teklif No: {currentOfferNo}</p>
+            <p className="text-slate-800 font-bold mt-1">Tarih: {new Date(offerDate).toLocaleDateString('tr-TR')}</p>
             <p className="text-slate-700 font-semibold">Geçerlilik: {validityDays} Gün</p>
           </div>
         </div>
 
         {/* Corporate Quality Certification Badges Bar */}
-        <div className="flex items-center justify-between border-y border-slate-300 py-2.5 my-4 bg-slate-50 px-4 rounded-xl print:py-1 print:my-1.5 print:px-2 print:rounded-none">
-          <span className="text-[10px] font-extrabold uppercase text-slate-600 tracking-wider print:text-[7.5pt]">
+        <div className="flex items-center justify-between border-y border-slate-300 py-2.5 my-3.5 bg-slate-50 px-4 rounded-xl">
+          <span className="text-[10px] font-extrabold uppercase text-slate-600 tracking-wider">
             KALİTE & UYGUNLUK STANDARTLARIMIZ:
           </span>
-          <div className="flex items-center space-x-5 print:space-x-3">
+          <div className="flex items-center space-x-5">
             <div className="flex items-center space-x-1.5" title="KGS - Hazır Beton Kalite Güvence Sistemi">
-              <img src="/images/image4.jpeg" alt="KGS Kalite Güvence Sistemi" className="h-8 w-auto object-contain mix-blend-multiply print:h-6" />
+              <img src="/images/image4.jpeg" alt="KGS Kalite Güvence Sistemi" className="h-7 w-auto object-contain mix-blend-multiply" />
             </div>
             <div className="flex items-center space-x-1.5" title="TSE - Türk Standartları Enstitüsü">
-              <img src="/images/image5.jpeg" alt="TSE Türk Standartları Enstitüsü" className="h-7 w-auto object-contain mix-blend-multiply print:h-5" />
+              <img src="/images/image5.jpeg" alt="TSE Türk Standartları Enstitüsü" className="h-6 w-auto object-contain mix-blend-multiply" />
             </div>
             <div className="flex items-center space-x-1.5" title="G Belgesi - Ürün Uygunluk Belgesi">
-              <img src="/images/g-belgesi-logo-400x400.png" alt="G Belgesi" className="h-7 w-auto object-contain mix-blend-multiply print:h-5" />
+              <img src="/images/g-belgesi-logo-400x400.png" alt="G Belgesi" className="h-6 w-auto object-contain mix-blend-multiply" />
             </div>
             <div className="flex items-center space-x-1.5" title="Geri Dönüşüm Çevre Dostu Tesis">
-              <img src="/images/image2.jpeg" alt="Geri Dönüşüm Çevre Dostu Tesis" className="h-7 w-auto object-contain mix-blend-multiply print:h-5" />
+              <img src="/images/image2.jpeg" alt="Geri Dönüşüm Çevre Dostu Tesis" className="h-6 w-auto object-contain mix-blend-multiply" />
             </div>
           </div>
         </div>
 
         {/* Customer & Project Info Box */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-100 p-4 rounded-xl mb-6 border border-slate-300 text-xs print:p-2 print:mb-2 print:gap-2 print:rounded-none">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-100 p-3.5 rounded-xl mb-4 border border-slate-300 text-xs">
           <div>
-            <span className="font-extrabold uppercase text-slate-600 block text-[10px] tracking-wider mb-1 print:text-[7pt] print:mb-0">SAYIN / MÜŞTERİ BİLGİLERİ</span>
-            <p className="font-black text-base text-slate-950 print:text-[9pt]">{customerName}</p>
+            <span className="font-extrabold uppercase text-slate-600 block text-[10px] tracking-wider mb-1">SAYIN / MÜŞTERİ BİLGİLERİ</span>
+            <p className="font-black text-base text-slate-950">{customerName}</p>
           </div>
           <div>
-            <span className="font-extrabold uppercase text-slate-600 block text-[10px] tracking-wider mb-1 print:text-[7pt] print:mb-0">ŞANTİYE / PROJE LOKASYONU</span>
-            <p className="font-black text-base text-slate-950 print:text-[9pt]">{projectName}</p>
+            <span className="font-extrabold uppercase text-slate-600 block text-[10px] tracking-wider mb-1">ŞANTİYE / PROJE LOKASYONU</span>
+            <p className="font-black text-base text-slate-950">{projectName}</p>
           </div>
         </div>
 
         {/* Table of Items */}
-        <div className="overflow-x-auto mb-6 print:mb-2">
+        <div className="overflow-x-auto mb-4">
           <table className="w-full text-xs text-left border-collapse border border-slate-400">
             <thead className="bg-slate-200 text-slate-950 font-black uppercase text-[11px]">
               <tr>
-                <th className="p-3 border border-slate-400 text-center print:p-1">Sıra</th>
-                <th className="p-3 border border-slate-400 print:p-1">Beton Sınıfı</th>
-                <th className="p-3 border border-slate-400 print:p-1">Döküm / Üretim Tipi</th>
-                <th className="p-3 border border-slate-400 text-right print:p-1">Miktar (m³)</th>
-                <th className="p-3 border border-slate-400 text-right print:p-1">Birim Fiyat (KDV Hariç)</th>
-                <th className="p-3 border border-slate-400 text-right print:p-1">Toplam Tutar (KDV Hariç)</th>
+                <th className="p-2.5 border border-slate-400 text-center">Sıra</th>
+                <th className="p-2.5 border border-slate-400">Beton Sınıfı</th>
+                <th className="p-2.5 border border-slate-400">Döküm / Üretim Tipi</th>
+                <th className="p-2.5 border border-slate-400 text-right">Miktar (m³)</th>
+                <th className="p-2.5 border border-slate-400 text-right">Birim Fiyat (KDV Hariç)</th>
+                <th className="p-2.5 border border-slate-400 text-right">Toplam Tutar (KDV Hariç)</th>
               </tr>
             </thead>
             <tbody className="font-mono text-slate-900">
               {processedItems.map((item, idx) => (
                 <tr key={item.id} className="border-b border-slate-300 hover:bg-slate-50">
-                  <td className="p-3 border border-slate-300 font-bold text-center print:p-1">{idx + 1}</td>
-                  <td className="p-3 border border-slate-300 font-black font-sans text-sm text-slate-950 print:p-1 print:text-[8.5pt]">{item.class}</td>
-                  <td className="p-3 border border-slate-300 font-sans font-bold text-slate-800 print:p-1 print:text-[8pt]">{item.type}</td>
-                  <td className="p-3 border border-slate-300 text-right font-black text-slate-950 print:p-1">{item.volume.toLocaleString('tr-TR')} m³</td>
-                  <td className="p-3 border border-slate-300 text-right font-bold text-slate-900 print:p-1">
+                  <td className="p-2.5 border border-slate-300 font-bold text-center">{idx + 1}</td>
+                  <td className="p-2.5 border border-slate-300 font-black font-sans text-sm text-slate-950">{item.class}</td>
+                  <td className="p-2.5 border border-slate-300 font-sans font-bold text-slate-800">{item.type}</td>
+                  <td className="p-2.5 border border-slate-300 text-right font-black text-slate-950">{item.volume.toLocaleString('tr-TR')} m³</td>
+                  <td className="p-2.5 border border-slate-300 text-right font-bold text-slate-900">
                     {formatCurrency(item.unitPriceExcl)}
                     {item.isCustom && <span className="text-[10px] text-emerald-700 font-sans ml-1 no-print">(Özel)</span>}
                   </td>
-                  <td className="p-3 border border-slate-300 text-right font-black text-slate-950 text-sm print:p-1 print:text-[8.5pt]">{formatCurrency(item.itemTotalExcl)}</td>
+                  <td className="p-2.5 border border-slate-300 text-right font-black text-slate-950 text-sm">{formatCurrency(item.itemTotalExcl)}</td>
                 </tr>
               ))}
             </tbody>
@@ -743,8 +743,8 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
         </div>
 
         {/* Summary Calculations */}
-        <div className="flex justify-end mb-8 print:mb-2">
-          <div className="w-full sm:w-80 bg-slate-100 p-4 rounded-xl border border-slate-400 space-y-2.5 text-xs font-mono text-slate-900 print:p-2 print:space-y-1 print:rounded-none">
+        <div className="flex justify-end mb-5">
+          <div className="w-full sm:w-80 bg-slate-100 p-3.5 rounded-xl border border-slate-400 space-y-2 text-xs font-mono text-slate-900">
             <div className="flex justify-between text-slate-800 font-bold">
               <span>Ara Toplam (KDV Hariç):</span>
               <span className="font-black text-slate-950">{formatCurrency(subtotalExcl)}</span>
@@ -753,7 +753,7 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
               <span>KDV (%{Math.round(inputs.kdvOrani * 100)}):</span>
               <span className="font-black text-slate-950">{formatCurrency(kdvAmount)}</span>
             </div>
-            <div className="flex justify-between text-base font-black text-slate-950 pt-2.5 border-t-2 border-slate-400 print:pt-1 print:text-sm">
+            <div className="flex justify-between text-base font-black text-slate-950 pt-2 border-t-2 border-slate-400">
               <span>GENEL TOPLAM:</span>
               <span className="text-amber-800">{formatCurrency(grandTotal)}</span>
             </div>
@@ -761,9 +761,9 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
         </div>
 
         {/* Terms & Signatures */}
-        <div className="border-t-2 border-slate-900 pt-5 text-[11px] text-slate-800 space-y-3 print:pt-2 print:space-y-1">
-          <p className="font-extrabold text-slate-950 uppercase text-xs print:text-[8pt]">Teklif Şartları & Genel Esaslar:</p>
-          <ul className="list-disc list-inside space-y-2 text-slate-700 font-medium print:space-y-0.5 print:text-[7.5pt]">
+        <div className="border-t-2 border-slate-900 pt-4 text-[11px] text-slate-800 space-y-2.5">
+          <p className="font-extrabold text-slate-950 uppercase text-xs">Teklif Şartları & Genel Esaslar:</p>
+          <ul className="list-disc list-inside space-y-1.5 text-slate-700 font-medium">
             <li className="leading-relaxed">
               <strong>Hammadde & Fiyat Farkı Esası:</strong> İşbu teklifte belirtilen birim fiyatlar, teklif tarihindeki güncel <strong>çimento hammadde fiyatı ({inputs.cimentoFiyati.toLocaleString('tr-TR')} TL/Ton)</strong> ve <strong>motorin yakıt fiyatı ({inputs.mazotFiyati.toFixed(2)} TL/Litre)</strong> baz alınarak hesaplanmıştır. Sözleşme veya teslimat sürecinde hammadde ve yakıt fiyatlarında meydana gelebilecek değişiklikler, ilgili beton sınıfının reçete dozaj oranları ve nakliye mesafeleri doğrultusunda birim fiyatlara aynen fiyat farkı olarak eklenecektir.
             </li>
@@ -772,17 +772,17 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
             <li>Teklif verilen fiyatlar belirtilen geçerlilik süresince ({validityDays} gün) sabittir.</li>
           </ul>
 
-          <div className="grid grid-cols-2 gap-12 pt-10 text-center text-xs font-bold text-slate-950 print:pt-3 print:gap-6">
+          <div className="grid grid-cols-2 gap-12 pt-6 text-center text-xs font-bold text-slate-950">
             <div>
-              <p className="font-black text-slate-950 print:text-[8pt]">MALAKLAR İNŞAAT TAAHHÜT GIDA MADEN SANAYİ VE TİCARET A.Ş.</p>
-              <p className="text-[10px] text-slate-600 font-semibold font-mono mt-0.5 print:text-[7pt]">TINAZTEPE V.D. - 611 052 27 44</p>
-              <div className="h-10 print:h-6"></div>
-              <p className="border-t border-slate-400 pt-1 text-[11px] text-slate-700 font-semibold print:text-[7.5pt]">Yetkili İmza & Kaşe</p>
+              <p className="font-black text-slate-950">MALAKLAR İNŞAAT TAAHHÜT GIDA MADEN SANAYİ VE TİCARET A.Ş.</p>
+              <p className="text-[10px] text-slate-600 font-semibold font-mono mt-0.5">TINAZTEPE V.D. - 611 052 27 44</p>
+              <div className="h-8"></div>
+              <p className="border-t border-slate-400 pt-1 text-[11px] text-slate-700 font-semibold">Yetkili İmza & Kaşe</p>
             </div>
             <div>
-              <p className="font-black text-slate-950 print:text-[8pt]">MÜŞTERİ ONAYI</p>
-              <div className="h-10 print:h-6"></div>
-              <p className="border-t border-slate-400 pt-1 text-[11px] text-slate-700 font-semibold print:text-[7.5pt]">İmza & Kaşe</p>
+              <p className="font-black text-slate-950">MÜŞTERİ ONAYI</p>
+              <div className="h-8"></div>
+              <p className="border-t border-slate-400 pt-1 text-[11px] text-slate-700 font-semibold">İmza & Kaşe</p>
             </div>
           </div>
         </div>
