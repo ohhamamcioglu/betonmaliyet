@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Printer, Plus, Trash2, Building, Calendar, CheckCircle2, FileText, Info, Save, History, ExternalLink, Download, FolderOpen, RotateCcw } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Printer, Plus, Trash2, Building, Calendar, CheckCircle2, FileText, Info, Save, History, ExternalLink, Download, FolderOpen, RotateCcw, Cloud, CloudOff, RefreshCw } from 'lucide-react';
 import { CONCRETE_CLASSES, PRODUCTION_TYPES } from '../data/defaultData';
 import { formatCurrency, formatPercent } from '../utils/calculator';
+import { fetchCloudData, pushCloudData } from '../utils/cloudSync';
 
 // Local Storage Keys
 const SAVED_OFFERS_KEY = 'beton_saved_offers_v1';
@@ -44,6 +45,54 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
   const [currentOfferNo, setCurrentOfferNo] = useState(() => generateOfferNo(getInitialCounter(), new Date().toISOString().split('T')[0]));
   const [saveSuccessMsg, setSaveSuccessMsg] = useState(null);
   const [showHistoryPanel, setShowHistoryPanel] = useState(false);
+
+  // Cloud Sync States
+  const [isCloudSyncing, setIsCloudSyncing] = useState(false);
+
+  // Initial Cloud Sync Effect on Mount (Background Sync)
+  useEffect(() => {
+    let isMounted = true;
+    const loadFromCloud = async () => {
+      setIsCloudSyncing(true);
+      const cloudRes = await fetchCloudData();
+      if (isMounted && cloudRes.success) {
+        const cloudOffers = cloudRes.offers || [];
+        const cloudCounter = cloudRes.counter || 1;
+
+        setSavedOffers(prevLocal => {
+          const localIds = new Set(prevLocal.map(o => o.id));
+          const newFromCloud = cloudOffers.filter(o => !localIds.has(o.id));
+          const merged = [...newFromCloud, ...prevLocal];
+          try {
+            localStorage.setItem(SAVED_OFFERS_KEY, JSON.stringify(merged));
+          } catch (e) {}
+          return merged;
+        });
+
+        setOfferCounter(prevCounter => {
+          const maxCounter = Math.max(prevCounter, cloudCounter);
+          try {
+            localStorage.setItem(OFFER_COUNTER_KEY, maxCounter.toString());
+          } catch (e) {}
+          if (maxCounter > prevCounter) {
+            setCurrentOfferNo(generateOfferNo(maxCounter, offerDate));
+          }
+          return maxCounter;
+        });
+      }
+      if (isMounted) setIsCloudSyncing(false);
+    };
+
+    loadFromCloud();
+    return () => { isMounted = false; };
+  }, []);
+
+  // Cloud Sync Helper (Push to Cloud Store in background)
+  const syncToCloud = async (offersToSync, counterToSync) => {
+    setIsCloudSyncing(true);
+    await pushCloudData(offersToSync, counterToSync);
+    setIsCloudSyncing(false);
+  };
 
   // Offer Line Items (customPrice: empty string = use system price)
   const [lineItems, setLineItems] = useState([
@@ -112,7 +161,7 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
   const grandTotal = subtotalExcl + kdvAmount;
   const totalVolume = lineItems.reduce((acc, curr) => acc + (curr.volume || 0), 0);
 
-  // SAVE OFFER TO LOCALSTORAGE & INCREMENT OFFER NO
+  // SAVE OFFER TO LOCALSTORAGE & CLOUD & INCREMENT OFFER NO
   const handleSaveOffer = () => {
     const newOffer = {
       id: Date.now(),
@@ -134,25 +183,24 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
     setSavedOffers(updatedOffers);
     try {
       localStorage.setItem(SAVED_OFFERS_KEY, JSON.stringify(updatedOffers));
-    } catch (e) {
-      console.error('Save error:', e);
-    }
+    } catch (e) {}
 
     // Increment Counter for Next Offer
     const nextCounter = offerCounter + 1;
     setOfferCounter(nextCounter);
     try {
       localStorage.setItem(OFFER_COUNTER_KEY, nextCounter.toString());
-    } catch (e) {
-      console.error('Counter error:', e);
-    }
+    } catch (e) {}
 
     // Auto-generate Next Offer No
     const nextNo = generateOfferNo(nextCounter, offerDate);
     const savedNo = currentOfferNo;
     setCurrentOfferNo(nextNo);
 
-    setSaveSuccessMsg(`Teklif #${savedNo} tarayıcınıza kaydedildi! Sıradaki Teklif No (${nextNo}) atandı.`);
+    // Push to Cloud Store in Background
+    syncToCloud(updatedOffers, nextCounter);
+
+    setSaveSuccessMsg(`Teklif #${savedNo} cihazınıza ve Canlı Buluta kaydedildi! Sıradaki Teklif No (${nextNo}) atandı.`);
     setTimeout(() => setSaveSuccessMsg(null), 6000);
   };
 
@@ -177,9 +225,8 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
       setSavedOffers(updated);
       try {
         localStorage.setItem(SAVED_OFFERS_KEY, JSON.stringify(updated));
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) {}
+      syncToCloud(updated, offerCounter);
     }
   };
 
@@ -188,6 +235,7 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
     if (window.confirm('TÜM geçmiş teklif kayıtlarını silmek istediğinize emin misiniz?')) {
       setSavedOffers([]);
       localStorage.removeItem(SAVED_OFFERS_KEY);
+      syncToCloud([], offerCounter);
     }
   };
 
@@ -220,6 +268,7 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
             const merged = [...newUnique, ...savedOffers];
             setSavedOffers(merged);
             localStorage.setItem(SAVED_OFFERS_KEY, JSON.stringify(merged));
+            syncToCloud(merged, offerCounter);
             setSaveSuccessMsg(`${newUnique.length} adet yeni teklif başarıyla aktarıldı! (Toplam ${merged.length} teklif)`);
             setTimeout(() => setSaveSuccessMsg(null), 5000);
           } else {
@@ -230,6 +279,40 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
         }
       };
     }
+  };
+
+  // MANUAL CLOUD SYNC TRIGGER
+  const handleManualCloudSync = async () => {
+    setIsCloudSyncing(true);
+    const cloudRes = await fetchCloudData();
+    if (cloudRes.success) {
+      const cloudOffers = cloudRes.offers || [];
+      const cloudCounter = cloudRes.counter || 1;
+
+      setSavedOffers(prevLocal => {
+        const localIds = new Set(prevLocal.map(o => o.id));
+        const newFromCloud = cloudOffers.filter(o => !localIds.has(o.id));
+        const merged = [...newFromCloud, ...prevLocal];
+        try {
+          localStorage.setItem(SAVED_OFFERS_KEY, JSON.stringify(merged));
+        } catch (e) {}
+        return merged;
+      });
+
+      setOfferCounter(prevCounter => {
+        const maxCounter = Math.max(prevCounter, cloudCounter);
+        try {
+          localStorage.setItem(OFFER_COUNTER_KEY, maxCounter.toString());
+        } catch (e) {}
+        return maxCounter;
+      });
+
+      setSaveSuccessMsg('☁️ Canlı bulut senkronizasyonu tamamlandı. Tüm cihazların teklifleri eşitlendi.');
+      setTimeout(() => setSaveSuccessMsg(null), 5000);
+    } else {
+      alert('Bulut senkronizasyonunda hata oluştu.');
+    }
+    setIsCloudSyncing(false);
   };
 
   return (
@@ -245,22 +328,38 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
               <FileText className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white tracking-wide">
-                📄 MÜŞTERİ FİYAT TEKLİFİ OLUŞTURUCU
-              </h2>
+              <div className="flex items-center space-x-2">
+                <h2 className="text-lg font-bold text-white tracking-wide">
+                  📄 MÜŞTERİ FİYAT TEKLİFİ OLUŞTURUCU
+                </h2>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                  <Cloud className="w-3 h-3 mr-1 text-emerald-400" /> Canlı Bulut Sync
+                </span>
+              </div>
               <p className="text-xs text-slate-400">
-                Teklif hazırlayın, kaydedin, otomatik sıralı teklif numarası alın ve yazdırın.
+                Teklif hazırlayın, kaydedin, PC ve mobil cihazlarınız arasında otomatik senkronize edin.
               </p>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
             
+            {/* MANUAL CLOUD SYNC BUTTON */}
+            <button
+              onClick={handleManualCloudSync}
+              disabled={isCloudSyncing}
+              className="inline-flex items-center px-3 py-2 text-xs font-semibold rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-500/30 transition active:scale-95 disabled:opacity-50"
+              title="Tüm cihazların tekliflerini canlı buluttan şimdi eşitle"
+            >
+              <Cloud className={`w-3.5 h-3.5 mr-1.5 ${isCloudSyncing ? 'animate-pulse text-amber-400' : 'text-emerald-400'}`} />
+              {isCloudSyncing ? '☁️ Eşitleniyor...' : '☁️ Canlı Bulut Eşitle'}
+            </button>
+
             {/* SAVE BUTTON */}
             <button
               onClick={handleSaveOffer}
               className="inline-flex items-center px-3.5 py-2 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 transition active:scale-95"
-              title="Bu teklifi tarayıcı hafızasına kaydet ve teklif numarasını artır"
+              title="Bu teklifi tarayıcıya ve buluta kaydet, teklif numarasını artır"
             >
               <Save className="w-4 h-4 mr-1.5" />
               Teklifi Kaydet (Geçmişe Ekle)
@@ -312,6 +411,9 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
                 <span className="text-xs font-bold text-sky-300 uppercase tracking-wider">
                   📜 KAYITLI GEÇMİŞ TEKLİFLER ARŞİVİ ({savedOffers.length} Teklif)
                 </span>
+                <span className="text-[10px] text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                  ☁️ Canlı Bulut Senkronize
+                </span>
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
@@ -350,7 +452,7 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
 
             {savedOffers.length === 0 ? (
               <p className="text-xs text-slate-500 py-3 text-center">
-                Henüz kaydedilmiş teklif bulunmuyor. Yukarıdaki "Teklifi Kaydet" butonuna basarak tekliflerinizi tarayıcınıza kaydedebilirsiniz.
+                Henüz kaydedilmiş teklif bulunmuyor. Yukarıdaki "Teklifi Kaydet" butonuna basarak tekliflerinizi tarayıcınıza ve buluta kaydedebilirsiniz.
               </p>
             ) : (
               <div className="overflow-x-auto">
