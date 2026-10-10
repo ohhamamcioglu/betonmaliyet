@@ -652,19 +652,22 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
         
         {/* Document Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start border-b-2 border-slate-900 pb-5 mb-6 gap-4">
-          <div>
-            <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-black bg-amber-500 text-slate-950 uppercase tracking-wider mb-1">
-              RESMİ TEKLİF BELGESİ
-            </span>
-            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-950 font-sans uppercase">
-              MALAKLAR İNŞAAT TAAHHÜT GIDA MADEN SANAYİ VE TİCARET A.Ş.
-            </h1>
-            <p className="text-xs font-bold text-amber-800 tracking-wide mt-0.5 uppercase">
-              HAZIR BETON SANTRAİLİ ÜRETİM & SEVKİYAT KOORDİNATÖRLÜĞÜ
-            </p>
-            <p className="text-xs text-slate-700 font-medium mt-1">
-              Adres: Selçuklu Mah. M27V+MQ, 03300 Bolvadin / AFYONKARAHİSAR
-            </p>
+          <div className="flex items-start space-x-4">
+            <img src="/images/Resim1.jpg" alt="MİG Malaklar Logo" className="h-16 w-auto object-contain shrink-0 mt-1" />
+            <div>
+              <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-black bg-amber-500 text-slate-950 uppercase tracking-wider mb-1">
+                RESMİ TEKLİF BELGESİ
+              </span>
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-950 font-sans uppercase">
+                MALAKLAR İNŞAAT TAAHHÜT GIDA MADEN SANAYİ VE TİCARET A.Ş.
+              </h1>
+              <p className="text-xs font-bold text-amber-800 tracking-wide mt-0.5 uppercase">
+                HAZIR BETON SANTRAİLİ ÜRETİM & SEVKİYAT KOORDİNATÖRLÜĞÜ
+              </p>
+              <p className="text-xs text-slate-700 font-medium mt-1">
+                Adres: Selçuklu Mah. M27V+MQ, 03300 Bolvadin / AFYONKARAHİSAR
+              </p>
+            </div>
           </div>
           <div className="text-left sm:text-right text-xs font-mono shrink-0 bg-slate-100 p-3 rounded-lg border border-slate-300 print:bg-transparent print:border-none print:p-0">
             <p className="font-black text-slate-950 text-sm">Teklif No: {currentOfferNo}</p>
