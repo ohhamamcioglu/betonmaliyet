@@ -115,7 +115,11 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
     setLineItems(prev => prev.map(item => {
       if (item.id === id) {
         if (field === 'volume') {
-          return { ...item, volume: parseFloat(val) || 0 };
+          if (val === '' || val === undefined) {
+            return { ...item, volume: '' };
+          }
+          const num = parseFloat(val);
+          return { ...item, volume: isNaN(num) ? '' : num };
         }
         if (field === 'customPrice') {
           return { ...item, customPrice: val };
