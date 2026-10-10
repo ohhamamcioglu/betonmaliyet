@@ -1,5 +1,6 @@
 import React from 'react';
-import { DollarSign, Truck, Building, Percent, Fuel, Sparkles, Globe, Loader2 } from 'lucide-react';
+import { DollarSign, Truck, Building, Percent, Fuel, Sparkles, Globe, Loader2, MapPin } from 'lucide-react';
+import { AFYON_LOCATIONS, PLANT_ADDRESS } from '../data/afyonLocations';
 
 export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetchingRates }) {
   
@@ -25,6 +26,14 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
       ...prev,
       [field]: isNaN(num) ? '' : num / 100
     }));
+  };
+
+  const handleLocationSelect = (e) => {
+    const locId = e.target.value;
+    const loc = AFYON_LOCATIONS.find(l => l.id === locId);
+    if (loc) {
+      setInputs(prev => ({ ...prev, dokumMesafesi: loc.distanceKm }));
+    }
   };
 
   const getPercentValue = (val) => {
@@ -225,19 +234,57 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* İşletme & Lojistik Bilgileri */}
-        <div className="glass-panel rounded-2xl p-5 border border-slate-800 bg-slate-900/90 shadow-lg">
-          <div className="flex items-center space-x-2.5 mb-4 border-b border-slate-800 pb-3">
-            <div className="p-2 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20">
-              <Truck className="w-5 h-5" />
+        <div className="glass-panel rounded-2xl p-5 border border-slate-800 bg-slate-900/90 shadow-lg space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div className="flex items-center space-x-2.5">
+              <div className="p-2 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                <Truck className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white tracking-wide">
+                  ② İŞLETME & LOJİSTİK BİLGİLERİ
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Taşıma mesafeleri ve santral kapasite parametreleri.
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-base font-bold text-white tracking-wide">
-                ② İŞLETME & LOJİSTİK BİLGİLERİ
-              </h3>
-              <p className="text-xs text-slate-400">
-                Taşıma mesafeleri ve santral kapasite parametreleri.
-              </p>
-            </div>
+          </div>
+
+          {/* Plant Address Banner */}
+          <div className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 text-xs flex items-center space-x-2 text-slate-300 font-mono">
+            <MapPin className="w-4 h-4 text-amber-400 shrink-0" />
+            <span className="truncate">
+              <strong>Santral Adresi:</strong> {PLANT_ADDRESS.address}
+            </span>
+          </div>
+
+          {/* Afyon & Bolvadin Location Select Dropdown */}
+          <div className="bg-slate-950/60 p-3 rounded-xl border border-sky-500/30">
+            <label className="block text-xs font-bold text-sky-300 mb-1">
+              📍 Şantiye / Döküm Bölgesi Seçin (Afyonkarahisar & İlçeleri)
+            </label>
+            <select
+              onChange={handleLocationSelect}
+              className="w-full bg-slate-900 text-sky-300 font-bold text-xs p-2 rounded border border-slate-700 focus:outline-none focus:border-sky-400"
+            >
+              <option value="">📍 Konum Listesinden Seç (Mesafe Otomatik Güncellenir)</option>
+              {Object.entries(
+                AFYON_LOCATIONS.reduce((acc, loc) => {
+                  acc[loc.category] = acc[loc.category] || [];
+                  acc[loc.category].push(loc);
+                  return acc;
+                }, {})
+              ).map(([category, locations]) => (
+                <optgroup key={category} label={`--- ${category} ---`}>
+                  {locations.map(loc => (
+                    <option key={loc.id} value={loc.id}>
+                      {loc.name} ({loc.distanceKm} km)
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">

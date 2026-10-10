@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Search, TrendingUp, DollarSign, Zap, Fuel, Truck, Layers, Info } from 'lucide-react';
+import { Search, TrendingUp, DollarSign, Zap, Fuel, Truck, Layers, Info, MapPin } from 'lucide-react';
 import { CONCRETE_CLASSES, PRODUCTION_TYPES } from '../data/defaultData';
+import { AFYON_LOCATIONS, PLANT_ADDRESS } from '../data/afyonLocations';
 import { formatCurrency, formatPercent } from '../utils/calculator';
 
 export default function QuickLookup({ calculatedData, inputs, setInputs }) {
@@ -20,23 +21,42 @@ export default function QuickLookup({ calculatedData, inputs, setInputs }) {
   const costs = classData?.costs || {};
   const recipe = classData?.recipe || {};
 
+  const handleLocationSelect = (e) => {
+    const locId = e.target.value;
+    const loc = AFYON_LOCATIONS.find(l => l.id === locId);
+    if (loc) {
+      setInputs(prev => ({ ...prev, dokumMesafesi: loc.distanceKm }));
+    }
+  };
+
   return (
     <div className="glass-panel rounded-2xl p-6 border border-slate-800 bg-slate-900/90 shadow-xl glow-amber relative overflow-hidden">
       {/* Decorative subtle background gradient */}
       <div className="absolute -right-12 -bottom-12 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -left-12 -top-12 w-64 h-64 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="flex items-center space-x-3 mb-5 border-b border-slate-800 pb-3">
-        <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400">
-          <Search className="w-5 h-5" />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 border-b border-slate-800 pb-3">
+        <div className="flex items-center space-x-3">
+          <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400">
+            <Search className="w-5 h-5" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-white tracking-wide">
+              🔍 HIZLI FİYAT SORGULAMA PANELİ
+            </h2>
+            <p className="text-xs text-slate-400">
+              Üretim tipi, beton sınıfı, mesafe ve kâr oranını seçin; maliyet ve satış fiyatı anında hesaplansın.
+            </p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-lg font-bold text-white tracking-wide">
-            🔍 HIZLI FİYAT SORGULAMA PANELİ
-          </h2>
-          <p className="text-xs text-slate-400">
-            Üretim tipi, beton sınıfı ve kâr oranını seçin; maliyet ve satış fiyatı anında hesaplansın.
-          </p>
+
+        {/* Plant Base Badge */}
+        <div className="flex items-center space-x-2 bg-slate-950/80 px-3 py-1.5 rounded-lg border border-slate-800 text-xs text-slate-300">
+          <MapPin className="w-4 h-4 text-amber-400 shrink-0" />
+          <div>
+            <span className="font-bold text-amber-300 block text-[11px]">Santral Konumu</span>
+            <span className="text-[10px] text-slate-400 font-mono">Selçuklu, M27V+MQ, 03300 Bolvadin</span>
+          </div>
         </div>
       </div>
 
@@ -93,10 +113,44 @@ export default function QuickLookup({ calculatedData, inputs, setInputs }) {
             </div>
           </div>
 
+          {/* 3. Döküm Konumu & Şantiye Mesafesi */}
+          <div>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="block text-xs font-semibold uppercase text-slate-400">
+                3. Şantiye / Döküm Yeri Seçimi (Afyon)
+              </label>
+              <span className="text-[10px] text-amber-300 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 font-mono">
+                {inputs.dokumMesafesi || 13} km
+              </span>
+            </div>
+
+            <select
+              onChange={handleLocationSelect}
+              className="w-full bg-slate-900 text-sky-300 font-bold text-xs p-2.5 rounded-lg border border-slate-800 focus:outline-none focus:border-sky-400"
+            >
+              <option value="">📍 Şantiye Konumu Seçin (Afyonkarahisar / Bolvadin & Tüm İlçeler)</option>
+              {Object.entries(
+                AFYON_LOCATIONS.reduce((acc, loc) => {
+                  acc[loc.category] = acc[loc.category] || [];
+                  acc[loc.category].push(loc);
+                  return acc;
+                }, {})
+              ).map(([category, locations]) => (
+                <optgroup key={category} label={`--- ${category} ---`}>
+                  {locations.map(loc => (
+                    <option key={loc.id} value={loc.id}>
+                      {loc.name} ({loc.distanceKm} km)
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          </div>
+
           {/* Kâr Oranı */}
           <div>
             <label className="block text-xs font-semibold uppercase text-slate-400 mb-2">
-              3. Kâr Oranı Seviyesi
+              4. Kâr Oranı Seviyesi
             </label>
             <div className="grid grid-cols-3 gap-2">
               {[
@@ -200,7 +254,7 @@ export default function QuickLookup({ calculatedData, inputs, setInputs }) {
           <div className="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800 text-xs">
             <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5 flex items-center">
               <Layers className="w-3.5 h-3.5 mr-1.5 text-sky-400" />
-              {selectedClass} ({selectedType}) Birim Maliyet Dağılımı (TL / m³)
+              {selectedClass} ({selectedType}) Birim Maliyet Dağılımı (TL / m³) • {inputs.dokumMesafesi || 13} km Mesafe
             </h4>
             
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-slate-300 font-mono">

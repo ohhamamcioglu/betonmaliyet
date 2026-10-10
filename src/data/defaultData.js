@@ -12,7 +12,7 @@ export const DEFAULT_INPUTS = {
   isciMaasi: 70000,         // TL / kişi / ay (Maaş + SGK)
 
   // 2. İşletme ve Lojistik Bilgileri
-  dokumMesafesi: 24,        // km (Ortalama Beton Döküm Mesafesi)
+  dokumMesafesi: 13,        // km (Ortalama Beton Döküm Mesafesi - Bolvadin Santral Çıkışlı)
   agregaMesafesi: 21,       // km (Agrega Taşıma Mesafesi)
   gunlukDokum: 140,         // m³ / gün
   mikserKapasitesi: 10,     // m³
