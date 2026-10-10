@@ -36,11 +36,14 @@ export default function QuickLookup({ calculatedData, inputs, setInputs }) {
 
   const getGoogleMapsRouteUrl = () => {
     const destName = selectedLocationObj ? selectedLocationObj.name : 'Bolvadin Afyonkarahisar';
-    return `https://www.google.com/maps/dir/?api=1&origin=Sel%C3%A7uklu,+M27V%2BMQ,+03300+Bolvadin/Afyonkarahisar&destination=${encodeURIComponent(destName + ' Afyonkarahisar')}`;
+    // Direct Plus Code search origin M27V+MQ Bolvadin
+    return `https://www.google.com/maps/dir/?api=1&origin=M27V%2BMQ+Bolvadin&destination=${encodeURIComponent(destName + ' Afyonkarahisar')}`;
   };
 
   const getGoogleMapsEmbedUrl = () => {
-    const query = selectedLocationObj ? `${selectedLocationObj.name} Afyonkarahisar` : 'Bolvadin Selcuklu Afyonkarahisar';
+    const query = selectedLocationObj 
+      ? `M27V+MQ Bolvadin to ${selectedLocationObj.name} Afyonkarahisar` 
+      : 'M27V+MQ Bolvadin';
     return `https://maps.google.com/maps?q=${encodeURIComponent(query)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
   };
 
@@ -69,8 +72,8 @@ export default function QuickLookup({ calculatedData, inputs, setInputs }) {
         <div className="flex items-center space-x-2 bg-slate-950/80 px-3 py-1.5 rounded-lg border border-slate-800 text-xs text-slate-300">
           <MapPin className="w-4 h-4 text-amber-400 shrink-0" />
           <div>
-            <span className="font-bold text-amber-300 block text-[11px]">Santral Konumu</span>
-            <span className="text-[10px] text-slate-400 font-mono">Selçuklu, M27V+MQ, 03300 Bolvadin</span>
+            <span className="font-bold text-amber-300 block text-[11px]">Santral Plus Code</span>
+            <span className="text-[11px] text-sky-400 font-mono font-bold">M27V+MQ Bolvadin</span>
           </div>
         </div>
       </div>
@@ -170,7 +173,7 @@ export default function QuickLookup({ calculatedData, inputs, setInputs }) {
                 className="inline-flex items-center px-2.5 py-1 text-[11px] font-bold rounded-md bg-sky-500/15 text-sky-300 border border-sky-500/30 hover:bg-sky-500/25 transition"
               >
                 <ExternalLink className="w-3 h-3 mr-1 text-sky-400" />
-                Google Maps Canlı Rota Aç
+                M27V+MQ Rota Aç
               </a>
 
               <button
