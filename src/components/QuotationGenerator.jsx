@@ -192,59 +192,65 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
       </div>
 
       {/* Official Offer Document Printable View */}
-      <div className="glass-panel rounded-2xl p-8 border border-slate-800 bg-white text-slate-900 shadow-2xl print:shadow-none print:border-none print:p-0">
+      <div className="printable-quote-container bg-white text-slate-950 p-8 sm:p-10 rounded-2xl border border-slate-300 shadow-2xl print:shadow-none print:border-none print:p-0">
         
         {/* Document Header */}
-        <div className="flex justify-between items-start border-b-2 border-slate-900 pb-6 mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start border-b-2 border-slate-900 pb-5 mb-6 gap-4">
           <div>
-            <h1 className="text-2xl font-black tracking-tight text-slate-900 font-sans uppercase">
-              HAZIR BETON FİYAT TEKLİF FORMU
+            <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-black bg-amber-500 text-slate-950 uppercase tracking-wider mb-1">
+              RESMİ TEKLİF BELGESİ
+            </span>
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-950 font-sans uppercase">
+              MALAKLAR İNŞAAT TAAHHÜT GIDA MADEN SANAYİ VE TİCARET A.Ş.
             </h1>
-            <p className="text-xs text-slate-600 font-semibold mt-1">
-              Beton Santrali Üretim & Sevkiyat Koordinatörlüğü
+            <p className="text-xs font-bold text-amber-800 tracking-wide mt-0.5 uppercase">
+              HAZIR BETON SANTRAİLİ ÜRETİM & SEVKİYAT KOORDİNATÖRLÜĞÜ
+            </p>
+            <p className="text-xs text-slate-700 font-medium mt-1">
+              Adres: Selçuklu Mah. M27V+MQ, 03300 Bolvadin / AFYONKARAHİSAR
             </p>
           </div>
-          <div className="text-right text-xs font-mono">
-            <p className="font-bold text-slate-900">Teklif No: BT-{offerDate.replace(/-/g, '')}-01</p>
-            <p className="text-slate-600">Tarih: {new Date(offerDate).toLocaleDateString('tr-TR')}</p>
-            <p className="text-slate-600">Geçerlilik: {validityDays} Gün</p>
+          <div className="text-left sm:text-right text-xs font-mono shrink-0 bg-slate-100 p-3 rounded-lg border border-slate-300 print:bg-transparent print:border-none print:p-0">
+            <p className="font-black text-slate-950 text-sm">Teklif No: BT-{offerDate.replace(/-/g, '')}-01</p>
+            <p className="text-slate-800 font-bold mt-1">Tarih: {new Date(offerDate).toLocaleDateString('tr-TR')}</p>
+            <p className="text-slate-700 font-semibold">Geçerlilik: {validityDays} Gün</p>
           </div>
         </div>
 
         {/* Customer & Project Info Box */}
-        <div className="grid grid-cols-2 gap-6 bg-slate-100 p-4 rounded-lg mb-6 border border-slate-300 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-100 p-4 rounded-xl mb-6 border border-slate-300 text-xs">
           <div>
-            <span className="font-bold uppercase text-slate-500 block text-[10px] mb-1">MÜŞTERİ BİLGİLERİ</span>
-            <p className="font-bold text-sm text-slate-900">{customerName}</p>
+            <span className="font-extrabold uppercase text-slate-600 block text-[10px] tracking-wider mb-1">SAYIN / MÜŞTERİ BİLGİLERİ</span>
+            <p className="font-black text-base text-slate-950">{customerName}</p>
           </div>
           <div>
-            <span className="font-bold uppercase text-slate-500 block text-[10px] mb-1">ŞANTİYE / PROJE</span>
-            <p className="font-bold text-sm text-slate-900">{projectName}</p>
+            <span className="font-extrabold uppercase text-slate-600 block text-[10px] tracking-wider mb-1">ŞANTİYE / PROJE LOKASYONU</span>
+            <p className="font-black text-base text-slate-950">{projectName}</p>
           </div>
         </div>
 
         {/* Table of Items */}
         <div className="overflow-x-auto mb-6">
-          <table className="w-full text-xs text-left border-collapse border border-slate-300">
-            <thead className="bg-slate-200 text-slate-900 font-bold uppercase text-[11px]">
+          <table className="w-full text-xs text-left border-collapse border border-slate-400">
+            <thead className="bg-slate-200 text-slate-950 font-black uppercase text-[11px]">
               <tr>
-                <th className="p-2.5 border border-slate-300">Sıra</th>
-                <th className="p-2.5 border border-slate-300">Beton Sınıfı</th>
-                <th className="p-2.5 border border-slate-300">Döküm / Üretim Tipi</th>
-                <th className="p-2.5 border border-slate-300 text-right">Miktar (m³)</th>
-                <th className="p-2.5 border border-slate-300 text-right">Birim Fiyat (KDV Hariç)</th>
-                <th className="p-2.5 border border-slate-300 text-right">Toplam Tutar (KDV Hariç)</th>
+                <th className="p-3 border border-slate-400 text-center">Sıra</th>
+                <th className="p-3 border border-slate-400">Beton Sınıfı</th>
+                <th className="p-3 border border-slate-400">Döküm / Üretim Tipi</th>
+                <th className="p-3 border border-slate-400 text-right">Miktar (m³)</th>
+                <th className="p-3 border border-slate-400 text-right">Birim Fiyat (KDV Hariç)</th>
+                <th className="p-3 border border-slate-400 text-right">Toplam Tutar (KDV Hariç)</th>
               </tr>
             </thead>
-            <tbody className="font-mono text-slate-800">
+            <tbody className="font-mono text-slate-900">
               {processedItems.map((item, idx) => (
-                <tr key={item.id} className="border-b border-slate-200">
-                  <td className="p-2.5 border border-slate-300 font-bold text-center">{idx + 1}</td>
-                  <td className="p-2.5 border border-slate-300 font-bold font-sans">{item.class}</td>
-                  <td className="p-2.5 border border-slate-300 font-sans">{item.type}</td>
-                  <td className="p-2.5 border border-slate-300 text-right font-bold">{item.volume.toLocaleString('tr-TR')} m³</td>
-                  <td className="p-2.5 border border-slate-300 text-right">{formatCurrency(item.unitPriceExcl)}</td>
-                  <td className="p-2.5 border border-slate-300 text-right font-bold">{formatCurrency(item.itemTotalExcl)}</td>
+                <tr key={item.id} className="border-b border-slate-300 hover:bg-slate-50">
+                  <td className="p-3 border border-slate-300 font-bold text-center">{idx + 1}</td>
+                  <td className="p-3 border border-slate-300 font-black font-sans text-sm text-slate-950">{item.class}</td>
+                  <td className="p-3 border border-slate-300 font-sans font-bold text-slate-800">{item.type}</td>
+                  <td className="p-3 border border-slate-300 text-right font-black text-slate-950">{item.volume.toLocaleString('tr-TR')} m³</td>
+                  <td className="p-3 border border-slate-300 text-right font-bold text-slate-900">{formatCurrency(item.unitPriceExcl)}</td>
+                  <td className="p-3 border border-slate-300 text-right font-black text-slate-950 text-sm">{formatCurrency(item.itemTotalExcl)}</td>
                 </tr>
               ))}
             </tbody>
@@ -253,39 +259,41 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
 
         {/* Summary Calculations */}
         <div className="flex justify-end mb-8">
-          <div className="w-72 bg-slate-50 p-4 rounded-lg border border-slate-300 space-y-2 text-xs font-mono">
-            <div className="flex justify-between text-slate-700">
+          <div className="w-full sm:w-80 bg-slate-100 p-4 rounded-xl border border-slate-400 space-y-2.5 text-xs font-mono text-slate-900">
+            <div className="flex justify-between text-slate-800 font-bold">
               <span>Ara Toplam (KDV Hariç):</span>
-              <span className="font-bold">{formatCurrency(subtotalExcl)}</span>
+              <span className="font-black text-slate-950">{formatCurrency(subtotalExcl)}</span>
             </div>
-            <div className="flex justify-between text-slate-700">
+            <div className="flex justify-between text-slate-800 font-bold">
               <span>KDV (%{Math.round(inputs.kdvOrani * 100)}):</span>
-              <span className="font-bold">{formatCurrency(kdvAmount)}</span>
+              <span className="font-black text-slate-950">{formatCurrency(kdvAmount)}</span>
             </div>
-            <div className="flex justify-between text-sm font-black text-slate-900 pt-2 border-t border-slate-400">
+            <div className="flex justify-between text-base font-black text-slate-950 pt-2.5 border-t-2 border-slate-400">
               <span>GENEL TOPLAM:</span>
-              <span className="text-amber-700">{formatCurrency(grandTotal)}</span>
+              <span className="text-amber-800">{formatCurrency(grandTotal)}</span>
             </div>
           </div>
         </div>
 
         {/* Terms & Signatures */}
-        <div className="border-t border-slate-300 pt-4 text-[11px] text-slate-600 space-y-2">
-          <p className="font-bold text-slate-900">Teklif Koşulları:</p>
-          <ul className="list-disc list-inside space-y-1">
-            <li>Beton dökümü öncesinde zemin ve kalıp kontrolü şantiye sorumlusu tarafından yapılmalıdır.</li>
-            <li>Pompalı dökümlerde mikser bekleme süreleri standart 45 dakikayı aşmamalıdır.</li>
-            <li>Teklif verilen fiyatlar belirtilen teklif geçerlilik süresince sabittir.</li>
+        <div className="border-t-2 border-slate-900 pt-5 text-[11px] text-slate-800 space-y-3">
+          <p className="font-extrabold text-slate-950 uppercase text-xs">Teklif Şartları & Genel Esaslar:</p>
+          <ul className="list-disc list-inside space-y-1 text-slate-700 font-medium">
+            <li>Beton dökümü öncesinde zemin, mikser yanaşma yolu ve kalıp kontrolü şantiye yetkilisi tarafından sağlanmalıdır.</li>
+            <li>Pompalı dökümlerde araç bekleme süreleri standart 45 dakikayı aşmamalıdır.</li>
+            <li>Teklif verilen fiyatlar belirtilen geçerlilik süresince ({validityDays} gün) sabittir.</li>
           </ul>
 
-          <div className="grid grid-cols-2 gap-12 pt-8 text-center text-xs font-bold text-slate-800">
+          <div className="grid grid-cols-2 gap-12 pt-10 text-center text-xs font-bold text-slate-950">
             <div>
-              <p className="border-t border-slate-400 pt-2">Teklifi Hazırlayan (Beton Santrali)</p>
-              <p className="text-[10px] text-slate-500 font-normal">İmza & Kaşe</p>
+              <p className="font-black text-slate-950">MALAKLAR İNŞAAT TAAHHÜT GIDA MADEN SANAYİ VE TİCARET A.Ş.</p>
+              <div className="h-12"></div>
+              <p className="border-t border-slate-400 pt-1 text-[11px] text-slate-700 font-semibold">Yetkili İmza & Kaşe</p>
             </div>
             <div>
-              <p className="border-t border-slate-400 pt-2">Müşteri Onayı</p>
-              <p className="text-[10px] text-slate-500 font-normal">İmza & Kaşe</p>
+              <p className="font-black text-slate-950">MÜŞTERİ ONAYI</p>
+              <div className="h-12"></div>
+              <p className="border-t border-slate-400 pt-1 text-[11px] text-slate-700 font-semibold">İmza & Kaşe</p>
             </div>
           </div>
         </div>

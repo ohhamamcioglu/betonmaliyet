@@ -86,12 +86,18 @@ input[type="number"], input[type="text"], select {
 
 /* Print CSS */
 @media print {
+  @page {
+    margin: 1.5cm;
+    size: A4 portrait;
+  }
+
   body {
     background: #ffffff !important;
     color: #000000 !important;
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif !important;
   }
   
-  .no-print {
+  header, footer, nav, .no-print {
     display: none !important;
   }
 
@@ -99,12 +105,23 @@ input[type="number"], input[type="text"], select {
     display: block !important;
   }
 
+  /* Reset all background effects during printing */
   .glass-panel {
     background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
+    border: none !important;
     backdrop-filter: none !important;
     box-shadow: none !important;
     color: #000000 !important;
+  }
+
+  .printable-quote-container {
+    background: #ffffff !important;
+    color: #000000 !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   table {
@@ -113,12 +130,16 @@ input[type="number"], input[type="text"], select {
   }
 
   th, td {
-    border: 1px solid #cbd5e1 !important;
+    border: 1px solid #475569 !important;
     color: #000000 !important;
-    padding: 6px 10px !important;
+    padding: 8px 12px !important;
   }
 
   th {
-    background-color: #f1f5f9 !important;
+    background-color: #e2e8f0 !important;
+    color: #000000 !important;
+    font-weight: 800 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }
