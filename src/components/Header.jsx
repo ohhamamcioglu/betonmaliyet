@@ -13,7 +13,7 @@ export default function Header({
   setActiveTab 
 }) {
   return (
-    <header className="sticky top-0 z-40 glass-panel border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
+    <header className="relative z-40 glass-panel border-b border-slate-800 bg-slate-950/90 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           
