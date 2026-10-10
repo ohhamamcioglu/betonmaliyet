@@ -653,7 +653,7 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
         {/* Document Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start border-b-2 border-slate-900 pb-3 mb-3 gap-3">
           <div className="flex items-start space-x-3 sm:space-x-4">
-            <img src="/images/image1.jpeg" alt="MİG Malaklar Logo" className="h-14 sm:h-16 w-auto object-contain shrink-0 mt-0.5" />
+            <img src="/images/image1.jpeg" alt="MİG Malaklar Logo" className="h-16 sm:h-18 w-auto object-contain shrink-0 mt-2 sm:mt-2.5" />
             <div>
               <span className="inline-block px-2 py-0.5 rounded text-[9px] font-black bg-amber-500 text-slate-950 uppercase tracking-wider mb-0.5">
                 RESMİ TEKLİF BELGESİ
@@ -772,17 +772,19 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
             <li>Teklif verilen fiyatlar belirtilen geçerlilik süresince ({validityDays} gün) sabittir.</li>
           </ul>
 
-          <div className="grid grid-cols-2 gap-12 pt-6 text-center text-xs font-bold text-slate-950">
-            <div>
-              <p className="font-black text-slate-950">MALAKLAR İNŞAAT TAAHHÜT GIDA MADEN SANAYİ VE TİCARET A.Ş.</p>
-              <p className="text-[10px] text-slate-600 font-semibold font-mono mt-0.5">TINAZTEPE V.D. - 611 052 27 44</p>
-              <div className="h-8"></div>
-              <p className="border-t border-slate-400 pt-1 text-[11px] text-slate-700 font-semibold">Yetkili İmza & Kaşe</p>
+          <div className="grid grid-cols-2 gap-12 pt-5 text-center text-xs font-bold text-slate-950 items-stretch">
+            <div className="flex flex-col justify-between min-h-[90px]">
+              <div>
+                <p className="font-black text-slate-950 leading-tight">MALAKLAR İNŞAAT TAAHHÜT GIDA MADEN SANAYİ VE TİCARET A.Ş.</p>
+                <p className="text-[10px] text-slate-600 font-semibold font-mono mt-0.5">TINAZTEPE V.D. - 611 052 27 44</p>
+              </div>
+              <p className="border-t border-slate-400 pt-1 text-[11px] text-slate-700 font-semibold mt-3">Yetkili İmza & Kaşe</p>
             </div>
-            <div>
-              <p className="font-black text-slate-950">MÜŞTERİ ONAYI</p>
-              <div className="h-8"></div>
-              <p className="border-t border-slate-400 pt-1 text-[11px] text-slate-700 font-semibold">İmza & Kaşe</p>
+            <div className="flex flex-col justify-between min-h-[90px]">
+              <div>
+                <p className="font-black text-slate-950 leading-tight">MÜŞTERİ ONAYI</p>
+              </div>
+              <p className="border-t border-slate-400 pt-1 text-[11px] text-slate-700 font-semibold mt-3">İmza & Kaşe</p>
             </div>
           </div>
         </div>
