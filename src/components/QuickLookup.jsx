@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, TrendingUp, DollarSign, Zap, Fuel, Truck, Layers, Info, MapPin, ExternalLink, Map } from 'lucide-react';
+import { Search, TrendingUp, DollarSign, Zap, Fuel, Truck, Layers, Info, MapPin } from 'lucide-react';
 import { CONCRETE_CLASSES, PRODUCTION_TYPES } from '../data/defaultData';
 import { AFYON_LOCATIONS, PLANT_ADDRESS } from '../data/afyonLocations';
 import { formatCurrency, formatPercent } from '../utils/calculator';
@@ -8,8 +8,6 @@ export default function QuickLookup({ calculatedData, inputs, setInputs }) {
   const [selectedType, setSelectedType] = useState('MİKSERLİ');
   const [selectedClass, setSelectedClass] = useState('C 25');
   const [selectedProfitKey, setSelectedProfitKey] = useState('tier2'); // tier1, tier2, tier3
-  const [selectedLocationObj, setSelectedLocationObj] = useState(null);
-  const [showEmbeddedMap, setShowEmbeddedMap] = useState(false);
 
   const classData = calculatedData.classResults[selectedClass];
   const prodData = classData?.productionTypes[selectedType];
@@ -27,24 +25,8 @@ export default function QuickLookup({ calculatedData, inputs, setInputs }) {
     const locId = e.target.value;
     const loc = AFYON_LOCATIONS.find(l => l.id === locId);
     if (loc) {
-      setSelectedLocationObj(loc);
       setInputs(prev => ({ ...prev, dokumMesafesi: loc.distanceKm }));
-    } else {
-      setSelectedLocationObj(null);
     }
-  };
-
-  const getGoogleMapsRouteUrl = () => {
-    const destName = selectedLocationObj ? selectedLocationObj.name : 'Bolvadin Afyonkarahisar';
-    // Direct Plus Code search origin M27V+MQ Bolvadin
-    return `https://www.google.com/maps/dir/?api=1&origin=M27V%2BMQ+Bolvadin&destination=${encodeURIComponent(destName + ' Afyonkarahisar')}`;
-  };
-
-  const getGoogleMapsEmbedUrl = () => {
-    const query = selectedLocationObj 
-      ? `M27V+MQ Bolvadin to ${selectedLocationObj.name} Afyonkarahisar` 
-      : 'M27V+MQ Bolvadin';
-    return `https://maps.google.com/maps?q=${encodeURIComponent(query)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
   };
 
   return (
@@ -72,8 +54,8 @@ export default function QuickLookup({ calculatedData, inputs, setInputs }) {
         <div className="flex items-center space-x-2 bg-slate-950/80 px-3 py-1.5 rounded-lg border border-slate-800 text-xs text-slate-300">
           <MapPin className="w-4 h-4 text-amber-400 shrink-0" />
           <div>
-            <span className="font-bold text-amber-300 block text-[11px]">Santral Plus Code</span>
-            <span className="text-[11px] text-sky-400 font-mono font-bold">M27V+MQ Bolvadin</span>
+            <span className="font-bold text-amber-300 block text-[11px]">Santral Konumu</span>
+            <span className="text-[10px] text-slate-400 font-mono">Selçuklu, M27V+MQ, 03300 Bolvadin</span>
           </div>
         </div>
       </div>
@@ -163,43 +145,6 @@ export default function QuickLookup({ calculatedData, inputs, setInputs }) {
                 </optgroup>
               ))}
             </select>
-
-            {/* Google Maps Actions */}
-            <div className="flex items-center justify-between gap-2 mt-2">
-              <a
-                href={getGoogleMapsRouteUrl()}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center px-2.5 py-1 text-[11px] font-bold rounded-md bg-sky-500/15 text-sky-300 border border-sky-500/30 hover:bg-sky-500/25 transition"
-              >
-                <ExternalLink className="w-3 h-3 mr-1 text-sky-400" />
-                M27V+MQ Rota Aç
-              </a>
-
-              <button
-                type="button"
-                onClick={() => setShowEmbeddedMap(!showEmbeddedMap)}
-                className="inline-flex items-center px-2.5 py-1 text-[11px] font-semibold rounded-md bg-slate-800 text-slate-300 hover:text-white border border-slate-700 transition"
-              >
-                <Map className="w-3 h-3 mr-1 text-amber-400" />
-                {showEmbeddedMap ? 'Haritayı Gizle' : 'Haritayı Göster'}
-              </button>
-            </div>
-
-            {/* Embedded Google Map */}
-            {showEmbeddedMap && (
-              <div className="mt-3 rounded-xl overflow-hidden border border-slate-700 shadow-md">
-                <iframe
-                  title="Google Maps Navigation Preview"
-                  width="100%"
-                  height="180"
-                  style={{ border: 0 }}
-                  loading="lazy"
-                  allowFullScreen
-                  src={getGoogleMapsEmbedUrl()}
-                />
-              </div>
-            )}
           </div>
 
           {/* Kâr Oranı */}
