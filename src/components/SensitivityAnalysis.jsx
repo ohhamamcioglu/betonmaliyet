@@ -225,12 +225,37 @@ export default function SensitivityAnalysis({ baseInputs, recipes }) {
             </div>
           </div>
 
-          <div className="p-3 bg-amber-500/10 rounded-xl border border-amber-500/20 text-xs text-amber-300/90 flex items-start space-x-2">
-            <AlertTriangle className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
-            <span>
-              Tavsiye: Mazot ve çimento fiyatlarındaki olası %10'luk bir artış, m³ satış fiyatına doğrudan yansıtılmazsa şirket kârlılığınızı aylık ortalama <strong>{formatCurrency(Math.abs(totalMonthlyImpact))}</strong> düşürür.
-            </span>
-          </div>
+          {totalMonthlyImpact > 0 ? (
+            <div className="p-3.5 bg-red-500/10 rounded-xl border border-red-500/20 text-xs text-red-300 flex items-start space-x-2.5">
+              <AlertTriangle className="w-4 h-4 shrink-0 text-red-400 mt-0.5" />
+              <div>
+                <span className="font-bold text-red-200 block mb-0.5">⚠️ Kârlılık Uyarısı (Maliyet Artışı):</span>
+                <span>
+                  Simüle edilen fiyat artışları m³ maliyetinizi <strong>+{costDelta.toFixed(2)} ₺</strong> artırdı. Satış fiyatlarına doğrudan yansıtılmazsa, bu durum şirket kârlılığınızı aylık ortalama <strong>{formatCurrency(totalMonthlyImpact)}</strong> düşürür.
+                </span>
+              </div>
+            </div>
+          ) : totalMonthlyImpact < 0 ? (
+            <div className="p-3.5 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-xs text-emerald-300 flex items-start space-x-2.5">
+              <TrendingUp className="w-4 h-4 shrink-0 text-emerald-400 mt-0.5" />
+              <div>
+                <span className="font-bold text-emerald-200 block mb-0.5">🎉 Kârlılık Fırsatı (Lehinize Değişim):</span>
+                <span>
+                  Girdi fiyatlarındaki düşüş lehinize işledi! m³ maliyetiniz <strong>{costDelta.toFixed(2)} ₺</strong> azaldı. Satış fiyatları aynı kalırsa, bu durum şirket kârlılığınızı aylık ortalama <strong>{formatCurrency(Math.abs(totalMonthlyImpact))}</strong> arttırır.
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="p-3.5 bg-amber-500/10 rounded-xl border border-amber-500/20 text-xs text-amber-300/90 flex items-start space-x-2.5">
+              <Zap className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
+              <div>
+                <span className="font-bold text-amber-200 block mb-0.5">💡 Simülasyon Tavsiyesi:</span>
+                <span>
+                  Slider'ları kaydırarak çimento, mazot, dolar veya agrega fiyat düşüş/artışlarının şirket kârlılığınıza canlı etkisini test edebilirsiniz.
+                </span>
+              </div>
+            </div>
+          )}
 
         </div>
 
