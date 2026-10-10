@@ -107,57 +107,115 @@ export default function App() {
     }
   };
 
-  // Export current calculated matrix & inputs to XLSX file
+  // Export current calculated matrix & inputs to 100% valid XLSX file
   const handleExportExcel = () => {
-    const wb = XLSX.utils.book_new();
+    try {
+      const wb = XLSX.utils.book_new();
 
-    const matrixRows = [];
-    matrixRows.push(['BETON FİYAT HESAPLAMA PANELİ']);
-    matrixRows.push(['Dönem:', 'EKİM 2026']);
-    matrixRows.push([]);
-    matrixRows.push(['Üretim Tipi', 'Beton Sınıfı', 'Maliyet (Kârsız)', 'Kâr Oranı 1 (%10)', 'KDV Dahil 1', 'Kâr Oranı 2 (%15)', 'KDV Dahil 2', 'Kâr Oranı 3 (%20)', 'KDV Dahil 3']);
+      // SHEET 1: FIYAT LISTESI MATRISI
+      const matrixRows = [
+        ['MALAKLAR İNŞAAT TAAHHÜT GIDA MADEN SANAYİ VE TİCARET A.Ş.'],
+        ['BETON MALİYET & SATIŞ FİYATI DETAYLI MATRİS RAPORU'],
+        [`Rapor Tarihi: ${new Date().toLocaleDateString('tr-TR')}`],
+        [],
+        [
+          'Döküm / Üretim Tipi',
+          'Beton Sınıfı',
+          'Taban Maliyet (TL/m³)',
+          `Kâr 1 (%${Math.round(inputs.karOrani1 * 100)}) - KDV Hariç`,
+          `Kâr 1 (%${Math.round(inputs.karOrani1 * 100)}) - KDV Dahil`,
+          `Kâr 2 (%${Math.round(inputs.karOrani2 * 100)}) - KDV Hariç`,
+          `Kâr 2 (%${Math.round(inputs.karOrani2 * 100)}) - KDV Dahil`,
+          `Kâr 3 (%${Math.round(inputs.karOrani3 * 100)}) - KDV Hariç`,
+          `Kâr 3 (%${Math.round(inputs.karOrani3 * 100)}) - KDV Dahil`,
+        ]
+      ];
 
-    PRODUCTION_TYPES.forEach(prodType => {
-      CONCRETE_CLASSES.forEach(cls => {
-        const pObj = calculatedData.classResults[cls]?.productionTypes[prodType.id];
-        if (pObj) {
-          matrixRows.push([
-            prodType.label,
-            cls,
-            Math.round(pObj.baseCost * 100) / 100,
-            Math.round(pObj.tier1.excl * 100) / 100,
-            Math.round(pObj.tier1.incl * 100) / 100,
-            Math.round(pObj.tier2.excl * 100) / 100,
-            Math.round(pObj.tier2.incl * 100) / 100,
-            Math.round(pObj.tier3.excl * 100) / 100,
-            Math.round(pObj.tier3.incl * 100) / 100,
-          ]);
-        }
+      PRODUCTION_TYPES.forEach(prodType => {
+        CONCRETE_CLASSES.forEach(cls => {
+          const pObj = calculatedData.classResults[cls]?.productionTypes[prodType.id];
+          if (pObj) {
+            matrixRows.push([
+              prodType.label,
+              cls,
+              Number(pObj.baseCost.toFixed(2)),
+              Number(pObj.tier1.excl.toFixed(2)),
+              Number(pObj.tier1.incl.toFixed(2)),
+              Number(pObj.tier2.excl.toFixed(2)),
+              Number(pObj.tier2.incl.toFixed(2)),
+              Number(pObj.tier3.excl.toFixed(2)),
+              Number(pObj.tier3.incl.toFixed(2)),
+            ]);
+          }
+        });
       });
-    });
 
-    const wsMatrix = XLSX.utils.aoa_to_sheet(matrixRows);
-    XLSX.utils.book_append_sheet(wb, wsMatrix, 'Fiyat Listesi');
+      const wsMatrix = XLSX.utils.aoa_to_sheet(matrixRows);
+      wsMatrix['!cols'] = [
+        { wch: 18 }, { wch: 14 }, { wch: 20 },
+        { wch: 22 }, { wch: 22 }, { wch: 22 },
+        { wch: 22 }, { wch: 22 }, { wch: 22 }
+      ];
+      XLSX.utils.book_append_sheet(wb, wsMatrix, 'Fiyat Listesi Matrisi');
 
-    const inputRows = [
-      ['GİRDİ PARAMETRELERİ', 'DEĞER', 'BİRİM'],
-      ['Çimento Fiyatı', inputs.cimentoFiyati, 'TL/ton'],
-      ['Agrega Fiyatı', inputs.agregaFiyati, 'TL/ton'],
-      ['Katkı Fiyatı', inputs.katkiFiyatiUSD, '$/kg'],
-      ['Dolar Kuru', inputs.dolarKuru, 'TL/$'],
-      ['Mazot Fiyatı', inputs.mazotFiyati, 'TL/litre'],
-      ['Elektrik Fiyatı', inputs.elektrikFiyati, 'TL/kWh'],
-      ['Su Fiyatı', inputs.suFiyati, 'TL/ton'],
-      ['İşçi Maaşı', inputs.isciMaasi, 'TL/kişi/ay'],
-      ['Döküm Mesafesi', inputs.dokumMesafesi, 'km'],
-      ['Agrega Mesafesi', inputs.agregaMesafesi, 'km'],
-      ['Günlük Döküm', inputs.gunlukDokum, 'm³/gün'],
-      ['Mikser Kapasitesi', inputs.mikserKapasitesi, 'm³'],
-    ];
-    const wsInputs = XLSX.utils.aoa_to_sheet(inputRows);
-    XLSX.utils.book_append_sheet(wb, wsInputs, 'Girdiler');
+      // SHEET 2: GİRDİ PARAMETRELERİ
+      const inputRows = [
+        ['MALAKLAR A.Ş. - GİRDİ PARAMETRELERİ VE HESAPLAMA GİRDİLERİ'],
+        [`Rapor Tarihi: ${new Date().toLocaleDateString('tr-TR')}`],
+        [],
+        ['Parametre Adı', 'Değer', 'Birim', 'Açıklama'],
+        ['Çimento Fiyatı', inputs.cimentoFiyati, 'TL / Ton', 'Fabrika teslim çimento fiyatı'],
+        ['Agrega Fiyatı', inputs.agregaFiyati, 'TL / Ton', 'Ocak teslim agrega ton fiyatı'],
+        ['Kimyasal Katkı Fiyatı (USD)', inputs.katkiFiyatiUSD, '$ / kg', 'İthal katkı fiyatı'],
+        ['Dolar Kuru ($/TL)', inputs.dolarKuru, 'TL / $', 'Güncel TCMB / Piyasa Kuru'],
+        ['Mazot Fiyatı (KDV Dahil)', inputs.mazotFiyati, 'TL / Litre', 'Güncel akaryakıt pompası fiyatı'],
+        ['Elektrik Fiyatı', inputs.elektrikFiyati, 'TL / kWh', 'Sanayi tarifesi elektrik birim fiyatı'],
+        ['Su Fiyatı', inputs.suFiyati, 'TL / Ton', 'Tesis su maliyeti'],
+        ['Personel Maaşı', inputs.isciMaasi, 'TL / Ay', 'Ortalama personel maliyeti'],
+        ['Beton Döküm Mesafesi', inputs.dokumMesafesi, 'km', 'Ortalama şantiye mesafesi'],
+        ['Agrega Nakliye Mesafesi', inputs.agregaMesafesi, 'km', 'Ocak - Tesis arası nakliye'],
+        ['Günlük Üretim Hacmi', inputs.gunlukDokum, 'm³ / Gün', 'Ortalama günlük santral üretimi'],
+        ['Mikser Kapasitesi', inputs.mikserKapasitesi, 'm³', 'Standart mikser hacmi'],
+        ['KDV Oranı', `%${Math.round(inputs.kdvOrani * 100)}`, '%', 'Katma Değer Vergisi'],
+        ['Kâr Oranı Tier 1', `%${Math.round(inputs.karOrani1 * 100)}`, '%', 'Düşük marj'],
+        ['Kâr Oranı Tier 2', `%${Math.round(inputs.karOrani2 * 100)}`, '%', 'Standart marj'],
+        ['Kâr Oranı Tier 3', `%${Math.round(inputs.karOrani3 * 100)}`, '%', 'Yüksek marj'],
+      ];
 
-    XLSX.writeFile(wb, 'Beton_Maliyet_Hesaplama_Raporu.xlsx');
+      const wsInputs = XLSX.utils.aoa_to_sheet(inputRows);
+      wsInputs['!cols'] = [{ wch: 30 }, { wch: 15 }, { wch: 15 }, { wch: 35 }];
+      XLSX.utils.book_append_sheet(wb, wsInputs, 'Maliyet Girdileri');
+
+      // SHEET 3: REÇETELER
+      const recipeRows = [
+        ['BETON REÇETELERİ KARIŞIM ORANLARI (1 m³ İÇİN)'],
+        [],
+        ['Beton Sınıfı', 'Çimento (kg)', 'Agrega (kg)', 'Su (litre)', 'Katkı (kg)']
+      ];
+
+      Object.entries(recipes).forEach(([cls, r]) => {
+        recipeRows.push([cls, r.cimento, r.agrega, r.su, r.katki]);
+      });
+
+      const wsRecipes = XLSX.utils.aoa_to_sheet(recipeRows);
+      wsRecipes['!cols'] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }];
+      XLSX.utils.book_append_sheet(wb, wsRecipes, 'Beton Reçeteleri');
+
+      // Write binary array buffer blob for 100% clean Excel opening across desktop & mobile
+      const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+      const url = URL.createObjectURL(blob);
+      const downloadLink = document.createElement('a');
+      downloadLink.href = url;
+      downloadLink.download = `Malaklar_Beton_Maliyet_Raporu_${new Date().toISOString().split('T')[0]}.xlsx`;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Excel export error:', err);
+      alert('Excel dosyası oluşturulurken bir hata oluştu: ' + err.message);
+    }
   };
 
   return (
