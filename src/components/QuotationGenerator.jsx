@@ -651,9 +651,9 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
       <div className="printable-quote-container bg-white text-slate-950 p-8 sm:p-10 rounded-2xl border border-slate-300 shadow-2xl print:shadow-none print:border-none print:p-0">
         
         {/* Document Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start border-b-2 border-slate-900 pb-5 mb-6 gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start border-b-2 border-slate-900 pb-5 mb-4 gap-4">
           <div className="flex items-start space-x-4">
-            <img src="/images/Resim1.jpg" alt="MİG Malaklar Logo" className="h-16 w-auto object-contain shrink-0 mt-1" />
+            <img src="/images/image1.jpeg" alt="MİG Malaklar Logo" className="h-16 w-auto object-contain shrink-0 mt-1" />
             <div>
               <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-black bg-amber-500 text-slate-950 uppercase tracking-wider mb-1">
                 RESMİ TEKLİF BELGESİ
@@ -673,6 +673,27 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
             <p className="font-black text-slate-950 text-sm">Teklif No: {currentOfferNo}</p>
             <p className="text-slate-800 font-bold mt-1">Tarih: {new Date(offerDate).toLocaleDateString('tr-TR')}</p>
             <p className="text-slate-700 font-semibold">Geçerlilik: {validityDays} Gün</p>
+          </div>
+        </div>
+
+        {/* Corporate Quality Certification Badges Bar */}
+        <div className="flex items-center justify-between border-y border-slate-300 py-2.5 my-4 bg-slate-50 px-4 rounded-xl">
+          <span className="text-[10px] font-extrabold uppercase text-slate-600 tracking-wider">
+            KALİTE & UYGUNLUK STANDARTLARIMIZ:
+          </span>
+          <div className="flex items-center space-x-5">
+            <div className="flex items-center space-x-1.5" title="KGS - Hazır Beton Kalite Güvence Sistemi">
+              <img src="/images/image4.jpeg" alt="KGS Kalite Güvence Sistemi" className="h-8 w-auto object-contain mix-blend-multiply" />
+            </div>
+            <div className="flex items-center space-x-1.5" title="TSE - Türk Standartları Enstitüsü">
+              <img src="/images/image5.jpeg" alt="TSE Türk Standartları Enstitüsü" className="h-7 w-auto object-contain mix-blend-multiply" />
+            </div>
+            <div className="flex items-center space-x-1.5" title="G Belgesi - Ürün Uygunluk Belgesi">
+              <img src="/images/g-belgesi-logo-400x400.png" alt="G Belgesi" className="h-7 w-auto object-contain mix-blend-multiply" />
+            </div>
+            <div className="flex items-center space-x-1.5" title="Geri Dönüşüm Çevre Dostu Tesis">
+              <img src="/images/image2.jpeg" alt="Geri Dönüşüm Çevre Dostu Tesis" className="h-7 w-auto object-contain mix-blend-multiply" />
+            </div>
           </div>
         </div>
 
