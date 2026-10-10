@@ -131,7 +131,12 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
   };
 
   const handlePrint = () => {
+    const originalTitle = document.title;
+    document.title = 'MALAKLAR İNŞAAT TAAHHÜT GIDA MADEN SANAYİ VE TİCARET A.Ş.';
     window.print();
+    setTimeout(() => {
+      document.title = originalTitle;
+    }, 1000);
   };
 
   // Calculations for Offer Items

@@ -44,8 +44,8 @@ export const DEFAULT_INPUTS = {
   katkiOrani: 0.01,           // çimentonun %1'i
 
   // Araç Adetleri
-  mikserAdedi: 4,
-  pompaAdedi: 1,
+  mikserAdedi: 6,
+  pompaAdedi: 3,
   loaderAdedi: 1,
   santralAdedi: 1,
   servisAdedi: 1,
