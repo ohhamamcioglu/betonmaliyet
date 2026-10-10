@@ -191,6 +191,47 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
     }
   };
 
+  // EXPORT OFFERS TO JSON FILE FOR DEVICE TRANSFER
+  const handleExportJson = () => {
+    if (savedOffers.length === 0) {
+      alert('Henüz kaydedilmiş teklif bulunmuyor.');
+      return;
+    }
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(savedOffers, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `Beton_Teklifleri_Yedek_${new Date().toISOString().split('T')[0]}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  };
+
+  // IMPORT OFFERS FROM JSON FILE
+  const handleImportJson = (e) => {
+    const fileReader = new FileReader();
+    if (e.target.files && e.target.files[0]) {
+      fileReader.readAsText(e.target.files[0], "UTF-8");
+      fileReader.onload = (event) => {
+        try {
+          const imported = JSON.parse(event.target.result);
+          if (Array.isArray(imported)) {
+            const existingIds = new Set(savedOffers.map(o => o.id));
+            const newUnique = imported.filter(o => !existingIds.has(o.id));
+            const merged = [...newUnique, ...savedOffers];
+            setSavedOffers(merged);
+            localStorage.setItem(SAVED_OFFERS_KEY, JSON.stringify(merged));
+            setSaveSuccessMsg(`${newUnique.length} adet yeni teklif başarıyla aktarıldı! (Toplam ${merged.length} teklif)`);
+            setTimeout(() => setSaveSuccessMsg(null), 5000);
+          } else {
+            alert('Geçersiz dosya biçimi.');
+          }
+        } catch (err) {
+          alert('Dosya okuma hatası: ' + err.message);
+        }
+      };
+    }
+  };
+
   return (
     <div className="space-y-6">
       
@@ -265,7 +306,7 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
         {/* SAVED OFFERS HISTORY EXPANDABLE PANEL */}
         {showHistoryPanel && (
           <div className="p-4 bg-slate-950/80 rounded-xl border border-sky-500/30 space-y-3 animate-fadeIn">
-            <div className="flex justify-between items-center border-b border-slate-800 pb-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-2.5 gap-2">
               <div className="flex items-center space-x-2">
                 <History className="w-4 h-4 text-sky-400" />
                 <span className="text-xs font-bold text-sky-300 uppercase tracking-wider">
@@ -273,14 +314,38 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
                 </span>
               </div>
 
-              {savedOffers.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Export Backup JSON */}
                 <button
-                  onClick={handleClearAllOffers}
-                  className="text-[11px] text-red-400 hover:text-red-300 font-bold"
+                  onClick={handleExportJson}
+                  className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-[11px] font-bold border border-slate-700 flex items-center space-x-1"
+                  title="Tüm teklifleri bilgisayar/telefon transfer dosyası (.json) olarak indir"
                 >
-                  Tümünü Temizle
+                  <Download className="w-3 h-3 text-sky-400" />
+                  <span>📥 Yedek İndir (Cihaz Transfer)</span>
                 </button>
-              )}
+
+                {/* Import Backup JSON */}
+                <label className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-[11px] font-bold border border-slate-700 flex items-center space-x-1 cursor-pointer">
+                  <FolderOpen className="w-3 h-3 text-amber-400" />
+                  <span>📤 Yedek Dosyası Yükle</span>
+                  <input
+                    type="file"
+                    accept=".json"
+                    onChange={handleImportJson}
+                    className="hidden"
+                  />
+                </label>
+
+                {savedOffers.length > 0 && (
+                  <button
+                    onClick={handleClearAllOffers}
+                    className="text-[11px] text-red-400 hover:text-red-300 font-bold ml-1"
+                  >
+                    Tümünü Temizle
+                  </button>
+                )}
+              </div>
             </div>
 
             {savedOffers.length === 0 ? (
