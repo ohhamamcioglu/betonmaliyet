@@ -1,16 +1,26 @@
 import React from 'react';
-import { FlaskConical, RotateCcw, Save } from 'lucide-react';
+import { FlaskConical, RotateCcw } from 'lucide-react';
 import { CONCRETE_CLASSES, DEFAULT_RECIPES } from '../data/defaultData';
 
 export default function RecipeManager({ recipes, setRecipes }) {
   
   const handleRecipeChange = (cls, field, value) => {
+    if (value === '' || value === undefined) {
+      setRecipes(prev => ({
+        ...prev,
+        [cls]: {
+          ...prev[cls],
+          [field]: ''
+        }
+      }));
+      return;
+    }
     const num = parseFloat(value);
     setRecipes(prev => ({
       ...prev,
       [cls]: {
         ...prev[cls],
-        [field]: isNaN(num) ? 0 : num
+        [field]: isNaN(num) ? '' : num
       }
     }));
   };
@@ -52,6 +62,8 @@ export default function RecipeManager({ recipes, setRecipes }) {
         {CONCRETE_CLASSES.map((cls) => {
           const recipe = recipes[cls] || { cimento: 300, agrega: 1900 };
 
+          const cimentoVal = Number(recipe.cimento) || 0;
+
           return (
             <div 
               key={cls}
@@ -70,7 +82,7 @@ export default function RecipeManager({ recipes, setRecipes }) {
                 <input
                   type="number"
                   step="5"
-                  value={recipe.cimento}
+                  value={recipe.cimento ?? ''}
                   onChange={(e) => handleRecipeChange(cls, 'cimento', e.target.value)}
                   className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-slate-700 focus:outline-none focus:border-sky-400"
                 />
@@ -84,7 +96,7 @@ export default function RecipeManager({ recipes, setRecipes }) {
                 <input
                   type="number"
                   step="10"
-                  value={recipe.agrega}
+                  value={recipe.agrega ?? ''}
                   onChange={(e) => handleRecipeChange(cls, 'agrega', e.target.value)}
                   className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-slate-700 focus:outline-none focus:border-amber-400"
                 />
@@ -94,7 +106,7 @@ export default function RecipeManager({ recipes, setRecipes }) {
               <div className="p-2 bg-slate-900/80 rounded border border-slate-800/80 text-[11px] text-slate-400 flex justify-between font-mono">
                 <span>Katkı (%1 Oranıyla):</span>
                 <span className="font-bold text-emerald-400">
-                  {recipe.katkiOverride !== undefined ? recipe.katkiOverride : (recipe.cimento * 0.01).toFixed(2)} kg
+                  {recipe.katkiOverride !== undefined ? recipe.katkiOverride : (cimentoVal * 0.01).toFixed(2)} kg
                 </span>
               </div>
 

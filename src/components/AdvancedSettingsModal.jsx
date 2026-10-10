@@ -6,19 +6,32 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
   if (!isOpen) return null;
 
   const handleChange = (field, value) => {
+    if (value === '' || value === undefined) {
+      setInputs(prev => ({ ...prev, [field]: '' }));
+      return;
+    }
     const num = parseFloat(value);
     setInputs(prev => ({
       ...prev,
-      [field]: isNaN(num) ? 0 : num
+      [field]: isNaN(num) ? '' : num
     }));
   };
 
   const handlePercentChange = (field, value) => {
+    if (value === '' || value === undefined) {
+      setInputs(prev => ({ ...prev, [field]: '' }));
+      return;
+    }
     const num = parseFloat(value);
     setInputs(prev => ({
       ...prev,
-      [field]: isNaN(num) ? 0 : num / 100
+      [field]: isNaN(num) ? '' : num / 100
     }));
+  };
+
+  const getPercentValue = (val) => {
+    if (val === '' || val === undefined || val === null) return '';
+    return Math.round(val * 100);
   };
 
   const handleResetSection = () => {
@@ -87,7 +100,7 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
                   <input
                     type="number"
                     step="0.05"
-                    value={inputs.mikserYakitTuketimi}
+                    value={inputs.mikserYakitTuketimi ?? ''}
                     onChange={(e) => handleChange('mikserYakitTuketimi', e.target.value)}
                     className="w-full bg-slate-900 text-white font-mono px-2 py-1 rounded border border-slate-700"
                   />
@@ -101,7 +114,7 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
                   <input
                     type="number"
                     step="0.05"
-                    value={inputs.agregaYakitTuketimi}
+                    value={inputs.agregaYakitTuketimi ?? ''}
                     onChange={(e) => handleChange('agregaYakitTuketimi', e.target.value)}
                     className="w-full bg-slate-900 text-white font-mono px-2 py-1 rounded border border-slate-700"
                   />
@@ -115,7 +128,7 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
                   <input
                     type="number"
                     step="0.05"
-                    value={inputs.pompaYakitTuketimi}
+                    value={inputs.pompaYakitTuketimi ?? ''}
                     onChange={(e) => handleChange('pompaYakitTuketimi', e.target.value)}
                     className="w-full bg-slate-900 text-white font-mono px-2 py-1 rounded border border-slate-700"
                   />
@@ -129,7 +142,7 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
                   <input
                     type="number"
                     step="0.05"
-                    value={inputs.kepceYakitTuketimi}
+                    value={inputs.kepceYakitTuketimi ?? ''}
                     onChange={(e) => handleChange('kepceYakitTuketimi', e.target.value)}
                     className="w-full bg-slate-900 text-white font-mono px-2 py-1 rounded border border-slate-700"
                   />
@@ -142,7 +155,7 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
                 <div className="flex items-center space-x-1.5">
                   <input
                     type="number"
-                    value={inputs.agregaKamyonKapasitesi}
+                    value={inputs.agregaKamyonKapasitesi ?? ''}
                     onChange={(e) => handleChange('agregaKamyonKapasitesi', e.target.value)}
                     className="w-full bg-slate-900 text-white font-mono px-2 py-1 rounded border border-slate-700"
                   />
@@ -156,7 +169,7 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
                   <input
                     type="number"
                     step="1"
-                    value={Math.round(inputs.agregaNakliyeKarOrani * 100)}
+                    value={getPercentValue(inputs.agregaNakliyeKarOrani)}
                     onChange={(e) => handlePercentChange('agregaNakliyeKarOrani', e.target.value)}
                     className="w-full bg-slate-900 text-white font-mono px-2 py-1 rounded border border-slate-700"
                   />
@@ -178,7 +191,7 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
                 <label className="block text-slate-300 font-semibold mb-1">Toplam İşçi Sayısı</label>
                 <input
                   type="number"
-                  value={inputs.isciSayisi}
+                  value={inputs.isciSayisi ?? ''}
                   onChange={(e) => handleChange('isciSayisi', e.target.value)}
                   className="w-full bg-slate-900 text-white font-mono px-2 py-1 rounded border border-slate-700"
                 />
@@ -190,7 +203,7 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
                   <input
                     type="number"
                     step="0.1"
-                    value={inputs.elektrikTuketimi}
+                    value={inputs.elektrikTuketimi ?? ''}
                     onChange={(e) => handleChange('elektrikTuketimi', e.target.value)}
                     className="w-full bg-slate-900 text-white font-mono px-2 py-1 rounded border border-slate-700"
                   />
@@ -204,7 +217,7 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
                   <input
                     type="number"
                     step="0.1"
-                    value={inputs.suTuketimi}
+                    value={inputs.suTuketimi ?? ''}
                     onChange={(e) => handleChange('suTuketimi', e.target.value)}
                     className="w-full bg-slate-900 text-white font-mono px-2 py-1 rounded border border-slate-700"
                   />
@@ -218,7 +231,7 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
                   <input
                     type="number"
                     step="1"
-                    value={Math.round(inputs.digerGiderOrani * 100)}
+                    value={getPercentValue(inputs.digerGiderOrani)}
                     onChange={(e) => handlePercentChange('digerGiderOrani', e.target.value)}
                     className="w-full bg-slate-900 text-white font-mono px-2 py-1 rounded border border-slate-700"
                   />
@@ -232,7 +245,7 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
                   <input
                     type="number"
                     step="0.1"
-                    value={(inputs.katkiOrani * 100).toFixed(1)}
+                    value={inputs.katkiOrani === '' ? '' : (inputs.katkiOrani !== undefined ? (inputs.katkiOrani * 100).toFixed(1) : '')}
                     onChange={(e) => handlePercentChange('katkiOrani', e.target.value)}
                     className="w-full bg-slate-900 text-white font-mono px-2 py-1 rounded border border-slate-700"
                   />
@@ -244,7 +257,7 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
                 <label className="block text-slate-300 font-semibold mb-1">Aylık Çalışma Gün Sayısı</label>
                 <input
                   type="number"
-                  value={inputs.aylikGunSayisi}
+                  value={inputs.aylikGunSayisi ?? ''}
                   onChange={(e) => handleChange('aylikGunSayisi', e.target.value)}
                   className="w-full bg-slate-900 text-white font-mono px-2 py-1 rounded border border-slate-700"
                 />
@@ -264,7 +277,7 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
                 <label className="block text-slate-300 font-semibold mb-1">Mikser Adedi</label>
                 <input
                   type="number"
-                  value={inputs.mikserAdedi}
+                  value={inputs.mikserAdedi ?? ''}
                   onChange={(e) => handleChange('mikserAdedi', e.target.value)}
                   className="w-full bg-slate-900 text-white font-mono px-2 py-1 rounded border border-slate-700"
                 />
@@ -274,7 +287,7 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
                 <label className="block text-slate-300 font-semibold mb-1">Pompa Adedi</label>
                 <input
                   type="number"
-                  value={inputs.pompaAdedi}
+                  value={inputs.pompaAdedi ?? ''}
                   onChange={(e) => handleChange('pompaAdedi', e.target.value)}
                   className="w-full bg-slate-900 text-white font-mono px-2 py-1 rounded border border-slate-700"
                 />
@@ -284,7 +297,7 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
                 <label className="block text-slate-300 font-semibold mb-1">Loader Adedi</label>
                 <input
                   type="number"
-                  value={inputs.loaderAdedi}
+                  value={inputs.loaderAdedi ?? ''}
                   onChange={(e) => handleChange('loaderAdedi', e.target.value)}
                   className="w-full bg-slate-900 text-white font-mono px-2 py-1 rounded border border-slate-700"
                 />
@@ -294,7 +307,7 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
                 <label className="block text-slate-300 font-semibold mb-1">Santral Adedi</label>
                 <input
                   type="number"
-                  value={inputs.santralAdedi}
+                  value={inputs.santralAdedi ?? ''}
                   onChange={(e) => handleChange('santralAdedi', e.target.value)}
                   className="w-full bg-slate-900 text-white font-mono px-2 py-1 rounded border border-slate-700"
                 />
@@ -304,7 +317,7 @@ export default function AdvancedSettingsModal({ isOpen, onClose, inputs, setInpu
                 <label className="block text-slate-300 font-semibold mb-1">Servis Adedi</label>
                 <input
                   type="number"
-                  value={inputs.servisAdedi}
+                  value={inputs.servisAdedi ?? ''}
                   onChange={(e) => handleChange('servisAdedi', e.target.value)}
                   className="w-full bg-slate-900 text-white font-mono px-2 py-1 rounded border border-slate-700"
                 />

@@ -6,47 +6,51 @@ import { CONCRETE_CLASSES, PRODUCTION_TYPES } from '../data/defaultData';
  * @param {Object} recipes Concrete recipes (mix design) per m³
  * @returns {Object} Comprehensive calculation result
  */
-export function calculateConcreteCosts(inputs, recipes) {
-  const {
-    cimentoFiyati,
-    agregaFiyati,
-    katkiFiyatiUSD,
-    dolarKuru,
-    mazotFiyati,
-    elektrikFiyati,
-    suFiyati,
-    isciMaasi,
-    dokumMesafesi,
-    agregaMesafesi,
-    gunlukDokum,
-    mikserKapasitesi,
-    santralKira,
-    mikserKira,
-    pompaKira,
-    loaderKira,
-    servisKira,
-    karOrani1,
-    karOrani2,
-    karOrani3,
-    kdvOrani,
-    mikserYakitTuketimi,
-    agregaYakitTuketimi,
-    agregaKamyonKapasitesi,
-    agregaNakliyeKarOrani,
-    pompaYakitTuketimi,
-    kepceYakitTuketimi,
-    isciSayisi,
-    elektrikTuketimi,
-    suTuketimi,
-    digerGiderOrani,
-    katkiOrani,
-    mikserAdedi,
-    pompaAdedi,
-    loaderAdedi,
-    santralAdedi,
-    servisAdedi,
-    aylikGunSayisi
-  } = inputs;
+export function calculateConcreteCosts(inputs = {}, recipes = {}) {
+  // Parse inputs safely (convert empty string '' or NaN to 0)
+  const cimentoFiyati = Number(inputs.cimentoFiyati) || 0;
+  const agregaFiyati = Number(inputs.agregaFiyati) || 0;
+  const katkiFiyatiUSD = Number(inputs.katkiFiyatiUSD) || 0;
+  const dolarKuru = Number(inputs.dolarKuru) || 0;
+  const mazotFiyati = Number(inputs.mazotFiyati) || 0;
+  const elektrikFiyati = Number(inputs.elektrikFiyati) || 0;
+  const suFiyati = Number(inputs.suFiyati) || 0;
+  const isciMaasi = Number(inputs.isciMaasi) || 0;
+
+  const dokumMesafesi = Number(inputs.dokumMesafesi) || 0;
+  const agregaMesafesi = Number(inputs.agregaMesafesi) || 0;
+  const gunlukDokum = Number(inputs.gunlukDokum) || 0;
+  const mikserKapasitesi = Number(inputs.mikserKapasitesi) || 0;
+
+  const santralKira = Number(inputs.santralKira) || 0;
+  const mikserKira = Number(inputs.mikserKira) || 0;
+  const pompaKira = Number(inputs.pompaKira) || 0;
+  const loaderKira = Number(inputs.loaderKira) || 0;
+  const servisKira = Number(inputs.servisKira) || 0;
+
+  const karOrani1 = Number(inputs.karOrani1) || 0;
+  const karOrani2 = Number(inputs.karOrani2) || 0;
+  const karOrani3 = Number(inputs.karOrani3) || 0;
+  const kdvOrani = Number(inputs.kdvOrani) || 0;
+
+  const mikserYakitTuketimi = Number(inputs.mikserYakitTuketimi) || 0;
+  const agregaYakitTuketimi = Number(inputs.agregaYakitTuketimi) || 0;
+  const agregaKamyonKapasitesi = Number(inputs.agregaKamyonKapasitesi) || 0;
+  const agregaNakliyeKarOrani = Number(inputs.agregaNakliyeKarOrani) || 0;
+  const pompaYakitTuketimi = Number(inputs.pompaYakitTuketimi) || 0;
+  const kepceYakitTuketimi = Number(inputs.kepceYakitTuketimi) || 0;
+  const isciSayisi = Number(inputs.isciSayisi) || 0;
+  const elektrikTuketimi = Number(inputs.elektrikTuketimi) || 0;
+  const suTuketimi = Number(inputs.suTuketimi) || 0;
+  const digerGiderOrani = Number(inputs.digerGiderOrani) || 0;
+  const katkiOrani = Number(inputs.katkiOrani) || 0;
+
+  const mikserAdedi = Number(inputs.mikserAdedi) || 0;
+  const pompaAdedi = Number(inputs.pompaAdedi) || 0;
+  const loaderAdedi = Number(inputs.loaderAdedi) || 0;
+  const santralAdedi = Number(inputs.santralAdedi) || 0;
+  const servisAdedi = Number(inputs.servisAdedi) || 0;
+  const aylikGunSayisi = Number(inputs.aylikGunSayisi) || 30;
 
   // Safe checks for zero denominators
   const safeGunlukDokum = gunlukDokum > 0 ? gunlukDokum : 1;
@@ -183,5 +187,5 @@ export function formatCurrency(value, decimals = 2) {
  */
 export function formatPercent(value, decimals = 1) {
   if (value === undefined || value === null || isNaN(value)) return '%0';
-  return `%${(value * 100).toFixed(decimals)}`;
+  return `%${(Number(value) * 100).toFixed(decimals)}`;
 }

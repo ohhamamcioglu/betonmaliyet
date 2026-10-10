@@ -4,19 +4,32 @@ import { DollarSign, Truck, Building, Percent, Fuel, Sparkles, Globe, Loader2 } 
 export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetchingRates }) {
   
   const handleChange = (field, value) => {
+    if (value === '' || value === undefined) {
+      setInputs(prev => ({ ...prev, [field]: '' }));
+      return;
+    }
     const num = parseFloat(value);
     setInputs(prev => ({
       ...prev,
-      [field]: isNaN(num) ? 0 : num
+      [field]: isNaN(num) ? '' : num
     }));
   };
 
   const handlePercentChange = (field, value) => {
+    if (value === '' || value === undefined) {
+      setInputs(prev => ({ ...prev, [field]: '' }));
+      return;
+    }
     const num = parseFloat(value);
     setInputs(prev => ({
       ...prev,
-      [field]: isNaN(num) ? 0 : num / 100
+      [field]: isNaN(num) ? '' : num / 100
     }));
+  };
+
+  const getPercentValue = (val) => {
+    if (val === '' || val === undefined || val === null) return '';
+    return Math.round(val * 100);
   };
 
   return (
@@ -72,7 +85,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <input
                 type="number"
                 step="50"
-                value={inputs.cimentoFiyati}
+                value={inputs.cimentoFiyati ?? ''}
                 onChange={(e) => handleChange('cimentoFiyati', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-amber-500/30 focus:outline-none focus:ring-1 focus:ring-amber-400"
               />
@@ -89,7 +102,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <input
                 type="number"
                 step="5"
-                value={inputs.agregaFiyati}
+                value={inputs.agregaFiyati ?? ''}
                 onChange={(e) => handleChange('agregaFiyati', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-amber-500/30 focus:outline-none focus:ring-1 focus:ring-amber-400"
               />
@@ -106,7 +119,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <input
                 type="number"
                 step="0.01"
-                value={inputs.katkiFiyatiUSD}
+                value={inputs.katkiFiyatiUSD ?? ''}
                 onChange={(e) => handleChange('katkiFiyatiUSD', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-amber-500/30 focus:outline-none focus:ring-1 focus:ring-amber-400"
               />
@@ -126,7 +139,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <input
                 type="number"
                 step="0.01"
-                value={inputs.dolarKuru}
+                value={inputs.dolarKuru ?? ''}
                 onChange={(e) => handleChange('dolarKuru', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-amber-500/30 focus:outline-none focus:ring-1 focus:ring-sky-400"
               />
@@ -146,7 +159,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <input
                 type="number"
                 step="0.1"
-                value={inputs.mazotFiyati}
+                value={inputs.mazotFiyati ?? ''}
                 onChange={(e) => handleChange('mazotFiyati', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-amber-500/30 focus:outline-none focus:ring-1 focus:ring-sky-400"
               />
@@ -163,7 +176,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <input
                 type="number"
                 step="0.1"
-                value={inputs.elektrikFiyati}
+                value={inputs.elektrikFiyati ?? ''}
                 onChange={(e) => handleChange('elektrikFiyati', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-amber-500/30 focus:outline-none focus:ring-1 focus:ring-amber-400"
               />
@@ -180,7 +193,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <input
                 type="number"
                 step="0.5"
-                value={inputs.suFiyati}
+                value={inputs.suFiyati ?? ''}
                 onChange={(e) => handleChange('suFiyati', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-amber-500/30 focus:outline-none focus:ring-1 focus:ring-amber-400"
               />
@@ -197,7 +210,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <input
                 type="number"
                 step="1000"
-                value={inputs.isciMaasi}
+                value={inputs.isciMaasi ?? ''}
                 onChange={(e) => handleChange('isciMaasi', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-amber-500/30 focus:outline-none focus:ring-1 focus:ring-amber-400"
               />
@@ -236,7 +249,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <div className="flex items-center space-x-2">
                 <input
                   type="number"
-                  value={inputs.dokumMesafesi}
+                  value={inputs.dokumMesafesi ?? ''}
                   onChange={(e) => handleChange('dokumMesafesi', e.target.value)}
                   className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-slate-700 focus:outline-none focus:border-sky-400"
                 />
@@ -251,7 +264,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <div className="flex items-center space-x-2">
                 <input
                   type="number"
-                  value={inputs.agregaMesafesi}
+                  value={inputs.agregaMesafesi ?? ''}
                   onChange={(e) => handleChange('agregaMesafesi', e.target.value)}
                   className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-slate-700 focus:outline-none focus:border-sky-400"
                 />
@@ -267,7 +280,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
                 <input
                   type="number"
                   step="10"
-                  value={inputs.gunlukDokum}
+                  value={inputs.gunlukDokum ?? ''}
                   onChange={(e) => handleChange('gunlukDokum', e.target.value)}
                   className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-slate-700 focus:outline-none focus:border-sky-400"
                 />
@@ -282,7 +295,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <div className="flex items-center space-x-2">
                 <input
                   type="number"
-                  value={inputs.mikserKapasitesi}
+                  value={inputs.mikserKapasitesi ?? ''}
                   onChange={(e) => handleChange('mikserKapasitesi', e.target.value)}
                   className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-slate-700 focus:outline-none focus:border-sky-400"
                 />
@@ -318,7 +331,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <input
                 type="number"
                 step="10000"
-                value={inputs.santralKira}
+                value={inputs.santralKira ?? ''}
                 onChange={(e) => handleChange('santralKira', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-xs px-2 py-1 rounded border border-slate-700 focus:outline-none focus:border-emerald-400"
               />
@@ -331,7 +344,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <input
                 type="number"
                 step="5000"
-                value={inputs.mikserKira}
+                value={inputs.mikserKira ?? ''}
                 onChange={(e) => handleChange('mikserKira', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-xs px-2 py-1 rounded border border-slate-700 focus:outline-none focus:border-emerald-400"
               />
@@ -344,7 +357,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <input
                 type="number"
                 step="10000"
-                value={inputs.pompaKira}
+                value={inputs.pompaKira ?? ''}
                 onChange={(e) => handleChange('pompaKira', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-xs px-2 py-1 rounded border border-slate-700 focus:outline-none focus:border-emerald-400"
               />
@@ -357,7 +370,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <input
                 type="number"
                 step="5000"
-                value={inputs.loaderKira}
+                value={inputs.loaderKira ?? ''}
                 onChange={(e) => handleChange('loaderKira', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-xs px-2 py-1 rounded border border-slate-700 focus:outline-none focus:border-emerald-400"
               />
@@ -370,7 +383,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <input
                 type="number"
                 step="2000"
-                value={inputs.servisKira}
+                value={inputs.servisKira ?? ''}
                 onChange={(e) => handleChange('servisKira', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-xs px-2 py-1 rounded border border-slate-700 focus:outline-none focus:border-emerald-400"
               />
@@ -407,7 +420,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <input
                 type="number"
                 step="1"
-                value={Math.round(inputs.karOrani1 * 100)}
+                value={getPercentValue(inputs.karOrani1)}
                 onChange={(e) => handlePercentChange('karOrani1', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-slate-700 focus:outline-none focus:border-indigo-400"
               />
@@ -423,7 +436,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <input
                 type="number"
                 step="1"
-                value={Math.round(inputs.karOrani2 * 100)}
+                value={getPercentValue(inputs.karOrani2)}
                 onChange={(e) => handlePercentChange('karOrani2', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-slate-700 focus:outline-none focus:border-indigo-400"
               />
@@ -439,7 +452,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <input
                 type="number"
                 step="1"
-                value={Math.round(inputs.karOrani3 * 100)}
+                value={getPercentValue(inputs.karOrani3)}
                 onChange={(e) => handlePercentChange('karOrani3', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-slate-700 focus:outline-none focus:border-indigo-400"
               />
@@ -455,7 +468,7 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
               <input
                 type="number"
                 step="1"
-                value={Math.round(inputs.kdvOrani * 100)}
+                value={getPercentValue(inputs.kdvOrani)}
                 onChange={(e) => handlePercentChange('kdvOrani', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-slate-700 focus:outline-none focus:border-emerald-400"
               />
