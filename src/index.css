@@ -87,14 +87,18 @@ input[type="number"], input[type="text"], select {
 /* Print CSS */
 @media print {
   @page {
-    margin: 1.5cm;
+    margin: 0 !important;
     size: A4 portrait;
   }
 
-  body {
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
     background: #ffffff !important;
     color: #000000 !important;
     font-family: ui-sans-serif, system-ui, -apple-system, sans-serif !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
   
   header, footer, nav, .no-print {
@@ -120,8 +124,9 @@ input[type="number"], input[type="text"], select {
     width: 100% !important;
     box-shadow: none !important;
     border: none !important;
-    padding: 0 !important;
+    padding: 12mm 15mm !important;
     margin: 0 !important;
+    box-sizing: border-box !important;
   }
 
   table {
