@@ -14,41 +14,85 @@ import { DEFAULT_INPUTS, DEFAULT_RECIPES, CONCRETE_CLASSES, PRODUCTION_TYPES } f
 import { calculateConcreteCosts } from './utils/calculator';
 import { fetchLiveRates } from './utils/liveRates';
 
+const SAVED_INPUTS_KEY = 'beton_saved_inputs_v1';
+const LAST_RATES_KEY = 'beton_last_rates_info_v1';
+
+const getInitialInputs = () => {
+  try {
+    const saved = localStorage.getItem(SAVED_INPUTS_KEY);
+    return saved ? { ...DEFAULT_INPUTS, ...JSON.parse(saved) } : DEFAULT_INPUTS;
+  } catch {
+    return DEFAULT_INPUTS;
+  }
+};
+
+const getInitialRatesInfo = () => {
+  try {
+    const saved = localStorage.getItem(LAST_RATES_KEY);
+    return saved ? JSON.parse(saved) : null;
+  } catch {
+    return null;
+  }
+};
+
 export default function App() {
-  const [inputs, setInputs] = useState(DEFAULT_INPUTS);
+  const [inputs, setInputs] = useState(getInitialInputs);
   const [recipes, setRecipes] = useState(DEFAULT_RECIPES);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
 
   // Live Rates fetching state
   const [isFetchingRates, setIsFetchingRates] = useState(false);
-  const [lastRatesInfo, setLastRatesInfo] = useState(null);
+  const [lastRatesInfo, setLastRatesInfo] = useState(getInitialRatesInfo);
+
+  // Handler to fetch live USD rate and Fuel price
+  const handleFetchLiveRates = async (isAuto = false) => {
+    setIsFetchingRates(true);
+    try {
+      const data = await fetchLiveRates();
+      if (data && data.success) {
+        setInputs(prev => {
+          const updated = {
+            ...prev,
+            dolarKuru: data.dolarKuru || prev.dolarKuru,
+            mazotFiyati: data.mazotFiyati || prev.mazotFiyati,
+          };
+          try {
+            localStorage.setItem(SAVED_INPUTS_KEY, JSON.stringify(updated));
+          } catch (e) {}
+          return updated;
+        });
+        setLastRatesInfo(data);
+        try {
+          localStorage.setItem(LAST_RATES_KEY, JSON.stringify(data));
+        } catch (e) {}
+      }
+    } catch (err) {
+      console.error('Error in handleFetchLiveRates:', err);
+      if (!isAuto) {
+        alert('Canlı kur/mazot çekilirken bir hata oluştu.');
+      }
+    } finally {
+      setIsFetchingRates(false);
+    }
+  };
+
+  // Auto-fetch live rates on app startup + load fresh data silently
+  React.useEffect(() => {
+    handleFetchLiveRates(true);
+  }, []);
+
+  // Save inputs to localStorage whenever they change
+  React.useEffect(() => {
+    try {
+      localStorage.setItem(SAVED_INPUTS_KEY, JSON.stringify(inputs));
+    } catch (e) {}
+  }, [inputs]);
 
   // Live calculation output matching Excel 100%
   const calculatedData = useMemo(() => {
     return calculateConcreteCosts(inputs, recipes);
   }, [inputs, recipes]);
-
-  // Handler to fetch live USD rate and Fuel price
-  const handleFetchLiveRates = async () => {
-    setIsFetchingRates(true);
-    try {
-      const data = await fetchLiveRates();
-      if (data && data.success) {
-        setInputs(prev => ({
-          ...prev,
-          dolarKuru: data.dolarKuru || prev.dolarKuru,
-          mazotFiyati: data.mazotFiyati || prev.mazotFiyati,
-        }));
-        setLastRatesInfo(data);
-      }
-    } catch (err) {
-      console.error('Error in handleFetchLiveRates:', err);
-      alert('Canlı kur/mazot çekilirken bir hata oluştu.');
-    } finally {
-      setIsFetchingRates(false);
-    }
-  };
 
   // Reset to original Excel default values
   const handleResetDefaults = () => {
@@ -56,6 +100,10 @@ export default function App() {
       setInputs(DEFAULT_INPUTS);
       setRecipes(DEFAULT_RECIPES);
       setLastRatesInfo(null);
+      try {
+        localStorage.removeItem(SAVED_INPUTS_KEY);
+        localStorage.removeItem(LAST_RATES_KEY);
+      } catch (e) {}
     }
   };
 
