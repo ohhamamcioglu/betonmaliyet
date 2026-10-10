@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Printer, Plus, Trash2, Building, Calendar, CheckCircle2, FileText } from 'lucide-react';
+import { Printer, Plus, Trash2, Building, Calendar, CheckCircle2, FileText, Info } from 'lucide-react';
 import { CONCRETE_CLASSES, PRODUCTION_TYPES } from '../data/defaultData';
 import { formatCurrency, formatPercent } from '../utils/calculator';
 
@@ -10,16 +10,16 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
   const [validityDays, setValidityDays] = useState(15);
   const [selectedProfitTier, setSelectedProfitTier] = useState('tier2'); // tier1, tier2, tier3
 
-  // Offer Line Items
+  // Offer Line Items (customPrice: empty string = use system price)
   const [lineItems, setLineItems] = useState([
-    { id: 1, class: 'C 25', type: 'POMPALI', volume: 500 },
-    { id: 2, class: 'C 30', type: 'MİKSERLİ', volume: 200 }
+    { id: 1, class: 'C 25', type: 'POMPALI', volume: 500, customPrice: '' },
+    { id: 2, class: 'C 30', type: 'MİKSERLİ', volume: 200, customPrice: '' }
   ]);
 
   const handleAddItem = () => {
     setLineItems(prev => [
       ...prev,
-      { id: Date.now(), class: 'C 30', type: 'POMPALI', volume: 100 }
+      { id: Date.now(), class: 'C 30', type: 'POMPALI', volume: 100, customPrice: '' }
     ]);
   };
 
@@ -30,7 +30,13 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
   const handleUpdateItem = (id, field, val) => {
     setLineItems(prev => prev.map(item => {
       if (item.id === id) {
-        return { ...item, [field]: field === 'volume' ? parseFloat(val) || 0 : val };
+        if (field === 'volume') {
+          return { ...item, volume: parseFloat(val) || 0 };
+        }
+        if (field === 'customPrice') {
+          return { ...item, customPrice: val };
+        }
+        return { ...item, [field]: val };
       }
       return item;
     }));
@@ -48,12 +54,20 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
     const prodObj = classData?.productionTypes[item.type];
     const profitObj = prodObj ? prodObj[selectedProfitTier] : null;
 
-    const unitPriceExcl = profitObj ? profitObj.excl : 0;
+    const systemPriceExcl = profitObj ? profitObj.excl : 0;
+    
+    // Check if custom price is entered by user
+    const parsedCustomPrice = parseFloat(item.customPrice);
+    const isCustom = !isNaN(parsedCustomPrice) && parsedCustomPrice >= 0 && item.customPrice !== '' && item.customPrice !== null;
+    const unitPriceExcl = isCustom ? parsedCustomPrice : systemPriceExcl;
+
     const itemTotalExcl = unitPriceExcl * item.volume;
     subtotalExcl += itemTotalExcl;
 
     return {
       ...item,
+      systemPriceExcl,
+      isCustom,
       unitPriceExcl,
       itemTotalExcl
     };
@@ -140,54 +154,77 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
         {/* Line Items Builder */}
         <div className="space-y-3">
           <div className="flex justify-between items-center text-xs font-bold text-slate-300">
-            <span>Teklif Kalemleri (Metreküp Miktarları)</span>
+            <span className="flex items-center space-x-2">
+              <span>Teklif Kalemleri (Metreküp Miktarları & Birim Fiyatlar)</span>
+              <span className="text-[11px] text-slate-500 font-normal hidden sm:inline">(Fiyatı boş bırakırsanız sistem kâr oranından çeker)</span>
+            </span>
             <button
               onClick={handleAddItem}
-              className="inline-flex items-center text-sky-400 hover:text-sky-300 text-xs"
+              className="inline-flex items-center text-sky-400 hover:text-sky-300 text-xs font-semibold"
             >
               <Plus className="w-3.5 h-3.5 mr-1" /> Kalem Ekle
             </button>
           </div>
 
-          {lineItems.map((item, idx) => (
-            <div key={item.id} className="flex flex-wrap items-center gap-3 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
-              <span className="text-xs font-bold text-slate-500 w-5">{idx + 1}.</span>
-              
-              <select
-                value={item.class}
-                onChange={(e) => handleUpdateItem(item.id, 'class', e.target.value)}
-                className="bg-slate-900 text-white font-bold text-xs px-2.5 py-1 rounded border border-slate-700"
-              >
-                {CONCRETE_CLASSES.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
+          {lineItems.map((item, idx) => {
+            const processed = processedItems.find(p => p.id === item.id);
+            return (
+              <div key={item.id} className="flex flex-wrap items-center gap-3 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
+                <span className="text-xs font-bold text-slate-500 w-5">{idx + 1}.</span>
+                
+                <select
+                  value={item.class}
+                  onChange={(e) => handleUpdateItem(item.id, 'class', e.target.value)}
+                  className="bg-slate-900 text-white font-bold text-xs px-2.5 py-1 rounded border border-slate-700"
+                >
+                  {CONCRETE_CLASSES.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
 
-              <select
-                value={item.type}
-                onChange={(e) => handleUpdateItem(item.id, 'type', e.target.value)}
-                className="bg-slate-900 text-amber-300 font-bold text-xs px-2.5 py-1 rounded border border-slate-700"
-              >
-                {PRODUCTION_TYPES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
-              </select>
+                <select
+                  value={item.type}
+                  onChange={(e) => handleUpdateItem(item.id, 'type', e.target.value)}
+                  className="bg-slate-900 text-amber-300 font-bold text-xs px-2.5 py-1 rounded border border-slate-700"
+                >
+                  {PRODUCTION_TYPES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
+                </select>
 
-              <div className="flex items-center space-x-1">
-                <input
-                  type="number"
-                  step="10"
-                  value={item.volume}
-                  onChange={(e) => handleUpdateItem(item.id, 'volume', e.target.value)}
-                  className="w-24 bg-slate-900 text-white font-mono font-bold text-xs px-2 py-1 rounded border border-slate-700 text-right"
-                />
-                <span className="text-xs text-slate-400 font-semibold">m³</span>
+                <div className="flex items-center space-x-1">
+                  <input
+                    type="number"
+                    step="10"
+                    value={item.volume}
+                    onChange={(e) => handleUpdateItem(item.id, 'volume', e.target.value)}
+                    className="w-24 bg-slate-900 text-white font-mono font-bold text-xs px-2 py-1 rounded border border-slate-700 text-right"
+                  />
+                  <span className="text-xs text-slate-400 font-semibold">m³</span>
+                </div>
+
+                {/* Custom Unit Price Input (Optional, fallbacks to system calculated price) */}
+                <div className="flex items-center space-x-1.5 ml-auto sm:ml-0">
+                  <span className="text-[11px] text-slate-400 font-semibold">Özel Fiyat:</span>
+                  <input
+                    type="number"
+                    step="1"
+                    placeholder={`Sistem: ${Math.round(processed?.systemPriceExcl || 0)} ₺`}
+                    value={item.customPrice ?? ''}
+                    onChange={(e) => handleUpdateItem(item.id, 'customPrice', e.target.value)}
+                    className={`w-36 bg-slate-900 font-mono font-bold text-xs px-2 py-1 rounded border text-right transition ${
+                      item.customPrice ? 'text-emerald-400 border-emerald-500/50' : 'text-slate-300 border-slate-700 placeholder:text-slate-500'
+                    }`}
+                    title="Boş bırakırsanız sistem kâr marjlı birim fiyatını çeker. İsterseniz elle özel teklif fiyatı yazabilirsiniz."
+                  />
+                  <span className="text-xs text-slate-400 font-semibold">₺/m³</span>
+                </div>
+
+                <button
+                  onClick={() => handleRemoveItem(item.id)}
+                  className="p-1 rounded text-red-400 hover:bg-red-500/10 ml-auto"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
-
-              <button
-                onClick={() => handleRemoveItem(item.id)}
-                className="p-1 rounded text-red-400 hover:bg-red-500/10 ml-auto"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -278,7 +315,10 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
         {/* Terms & Signatures */}
         <div className="border-t-2 border-slate-900 pt-5 text-[11px] text-slate-800 space-y-3">
           <p className="font-extrabold text-slate-950 uppercase text-xs">Teklif Şartları & Genel Esaslar:</p>
-          <ul className="list-disc list-inside space-y-1 text-slate-700 font-medium">
+          <ul className="list-disc list-inside space-y-2 text-slate-700 font-medium">
+            <li className="leading-relaxed">
+              <strong>Hammadde & Fiyat Farkı Esası:</strong> İşbu teklifte belirtilen birim fiyatlar, teklif tarihindeki güncel <strong>çimento hammadde fiyatı ({inputs.cimentoFiyati.toLocaleString('tr-TR')} TL/Ton)</strong> ve <strong>motorin yakıt fiyatı ({inputs.mazotFiyati.toFixed(2)} TL/Litre)</strong> baz alınarak hesaplanmıştır. Sözleşme veya teslimat sürecinde hammadde ve yakıt fiyatlarında meydana gelebilecek değişiklikler, ilgili beton sınıfının reçete dozaj oranları ve nakliye mesafeleri doğrultusunda birim fiyatlara aynen fiyat farkı olarak eklenecektir.
+            </li>
             <li>Beton dökümü öncesinde zemin, mikser yanaşma yolu ve kalıp kontrolü şantiye yetkilisi tarafından sağlanmalıdır.</li>
             <li>Pompalı dökümlerde araç bekleme süreleri standart 45 dakikayı aşmamalıdır.</li>
             <li>Teklif verilen fiyatlar belirtilen geçerlilik süresince ({validityDays} gün) sabittir.</li>
