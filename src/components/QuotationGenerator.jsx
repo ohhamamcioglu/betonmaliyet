@@ -1,7 +1,35 @@
 import React, { useState } from 'react';
-import { Printer, Plus, Trash2, Building, Calendar, CheckCircle2, FileText, Info } from 'lucide-react';
+import { Printer, Plus, Trash2, Building, Calendar, CheckCircle2, FileText, Info, Save, History, ExternalLink, Download, FolderOpen, RotateCcw } from 'lucide-react';
 import { CONCRETE_CLASSES, PRODUCTION_TYPES } from '../data/defaultData';
 import { formatCurrency, formatPercent } from '../utils/calculator';
+
+// Local Storage Keys
+const SAVED_OFFERS_KEY = 'beton_saved_offers_v1';
+const OFFER_COUNTER_KEY = 'beton_offer_counter_v1';
+
+const getInitialCounter = () => {
+  try {
+    const saved = localStorage.getItem(OFFER_COUNTER_KEY);
+    return saved ? parseInt(saved, 10) : 1;
+  } catch {
+    return 1;
+  }
+};
+
+const getInitialOffers = () => {
+  try {
+    const saved = localStorage.getItem(SAVED_OFFERS_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+};
+
+const generateOfferNo = (counter, dateStr) => {
+  const cleanDate = (dateStr || new Date().toISOString().split('T')[0]).replace(/-/g, '');
+  const seq = String(counter).padStart(2, '0');
+  return `BT-${cleanDate}-${seq}`;
+};
 
 export default function QuotationGenerator({ calculatedData, inputs }) {
   const [customerName, setCustomerName] = useState('YILMAZ İNŞAAT A.Ş.');
@@ -9,6 +37,13 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
   const [offerDate, setOfferDate] = useState(new Date().toISOString().split('T')[0]);
   const [validityDays, setValidityDays] = useState(15);
   const [selectedProfitTier, setSelectedProfitTier] = useState('tier2'); // tier1, tier2, tier3
+
+  // Storage & Counter State
+  const [offerCounter, setOfferCounter] = useState(getInitialCounter);
+  const [savedOffers, setSavedOffers] = useState(getInitialOffers);
+  const [currentOfferNo, setCurrentOfferNo] = useState(() => generateOfferNo(getInitialCounter(), new Date().toISOString().split('T')[0]));
+  const [saveSuccessMsg, setSaveSuccessMsg] = useState(null);
+  const [showHistoryPanel, setShowHistoryPanel] = useState(false);
 
   // Offer Line Items (customPrice: empty string = use system price)
   const [lineItems, setLineItems] = useState([
@@ -75,13 +110,95 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
 
   const kdvAmount = subtotalExcl * inputs.kdvOrani;
   const grandTotal = subtotalExcl + kdvAmount;
+  const totalVolume = lineItems.reduce((acc, curr) => acc + (curr.volume || 0), 0);
+
+  // SAVE OFFER TO LOCALSTORAGE & INCREMENT OFFER NO
+  const handleSaveOffer = () => {
+    const newOffer = {
+      id: Date.now(),
+      offerNo: currentOfferNo,
+      customerName,
+      projectName,
+      offerDate,
+      validityDays,
+      selectedProfitTier,
+      totalVolume,
+      lineItems: JSON.parse(JSON.stringify(lineItems)),
+      subtotalExcl,
+      kdvAmount,
+      grandTotal,
+      createdAt: new Date().toISOString()
+    };
+
+    const updatedOffers = [newOffer, ...savedOffers];
+    setSavedOffers(updatedOffers);
+    try {
+      localStorage.setItem(SAVED_OFFERS_KEY, JSON.stringify(updatedOffers));
+    } catch (e) {
+      console.error('Save error:', e);
+    }
+
+    // Increment Counter for Next Offer
+    const nextCounter = offerCounter + 1;
+    setOfferCounter(nextCounter);
+    try {
+      localStorage.setItem(OFFER_COUNTER_KEY, nextCounter.toString());
+    } catch (e) {
+      console.error('Counter error:', e);
+    }
+
+    // Auto-generate Next Offer No
+    const nextNo = generateOfferNo(nextCounter, offerDate);
+    const savedNo = currentOfferNo;
+    setCurrentOfferNo(nextNo);
+
+    setSaveSuccessMsg(`Teklif #${savedNo} tarayıcınıza kaydedildi! Sıradaki Teklif No (${nextNo}) atandı.`);
+    setTimeout(() => setSaveSuccessMsg(null), 6000);
+  };
+
+  // LOAD SAVED OFFER FROM HISTORY
+  const handleLoadOffer = (offer) => {
+    setCurrentOfferNo(offer.offerNo);
+    setCustomerName(offer.customerName || '');
+    setProjectName(offer.projectName || '');
+    setOfferDate(offer.offerDate || new Date().toISOString().split('T')[0]);
+    setValidityDays(offer.validityDays || 15);
+    setSelectedProfitTier(offer.selectedProfitTier || 'tier2');
+    setLineItems(offer.lineItems || []);
+
+    setSaveSuccessMsg(`Teklif #${offer.offerNo} başarıyla forma yüklendi.`);
+    setTimeout(() => setSaveSuccessMsg(null), 4000);
+  };
+
+  // DELETE SAVED OFFER FROM HISTORY
+  const handleDeleteOffer = (id) => {
+    if (window.confirm('Bu teklifi kayıtlı geçmişten silmek istediğinize emin misiniz?')) {
+      const updated = savedOffers.filter(o => o.id !== id);
+      setSavedOffers(updated);
+      try {
+        localStorage.setItem(SAVED_OFFERS_KEY, JSON.stringify(updated));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
+
+  // CLEAR ALL SAVED OFFERS
+  const handleClearAllOffers = () => {
+    if (window.confirm('TÜM geçmiş teklif kayıtlarını silmek istediğinize emin misiniz?')) {
+      setSavedOffers([]);
+      localStorage.removeItem(SAVED_OFFERS_KEY);
+    }
+  };
 
   return (
     <div className="space-y-6">
       
       {/* Controls Card (Hidden on Print) */}
-      <div className="glass-panel rounded-2xl p-5 border border-slate-800 bg-slate-900/90 shadow-xl no-print">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 border-b border-slate-800 pb-3">
+      <div className="glass-panel rounded-2xl p-5 border border-slate-800 bg-slate-900/90 shadow-xl no-print space-y-5">
+        
+        {/* Top Header & Main Action Buttons */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
           <div className="flex items-center space-x-3">
             <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
               <FileText className="w-5 h-5" />
@@ -91,22 +208,148 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
                 📄 MÜŞTERİ FİYAT TEKLİFİ OLUŞTURUCU
               </h2>
               <p className="text-xs text-slate-400">
-                Resmi müşteri teklifi hazırlayın ve doğrudan yazdırın veya PDF olarak kaydedin.
+                Teklif hazırlayın, kaydedin, otomatik sıralı teklif numarası alın ve yazdırın.
               </p>
             </div>
           </div>
 
-          <button
-            onClick={handlePrint}
-            className="inline-flex items-center px-4 py-2 text-xs font-bold rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md shadow-amber-500/20 transition active:scale-95"
-          >
-            <Printer className="w-4 h-4 mr-1.5" />
-            Teklifi Yazdır / PDF Yap
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            
+            {/* SAVE BUTTON */}
+            <button
+              onClick={handleSaveOffer}
+              className="inline-flex items-center px-3.5 py-2 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 transition active:scale-95"
+              title="Bu teklifi tarayıcı hafızasına kaydet ve teklif numarasını artır"
+            >
+              <Save className="w-4 h-4 mr-1.5" />
+              Teklifi Kaydet (Geçmişe Ekle)
+            </button>
+
+            {/* HISTORY TOGGLE BUTTON */}
+            <button
+              onClick={() => setShowHistoryPanel(!showHistoryPanel)}
+              className={`inline-flex items-center px-3.5 py-2 text-xs font-bold rounded-lg border transition active:scale-95 ${
+                showHistoryPanel
+                  ? 'bg-sky-500 text-slate-950 border-sky-400'
+                  : 'bg-slate-800 hover:bg-slate-700 text-sky-300 border-slate-700'
+              }`}
+            >
+              <History className="w-4 h-4 mr-1.5" />
+              Geçmiş Teklifler ({savedOffers.length})
+            </button>
+
+            {/* PRINT BUTTON */}
+            <button
+              onClick={handlePrint}
+              className="inline-flex items-center px-4 py-2 text-xs font-bold rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md shadow-amber-500/20 transition active:scale-95"
+            >
+              <Printer className="w-4 h-4 mr-1.5" />
+              Teklifi Yazdır / PDF Yap
+            </button>
+          </div>
         </div>
 
+        {/* Save Alert Notification Banner */}
+        {saveSuccessMsg && (
+          <div className="p-3.5 bg-emerald-500/15 border border-emerald-500/30 rounded-xl text-xs text-emerald-300 flex items-center justify-between font-semibold animate-fadeIn">
+            <div className="flex items-center space-x-2">
+              <CheckCircle2 className="w-4.5 h-4.5 text-emerald-400 shrink-0" />
+              <span>{saveSuccessMsg}</span>
+            </div>
+            <button onClick={() => setSaveSuccessMsg(null)} className="text-emerald-400 hover:text-white font-bold ml-3 text-xs underline">
+              Kapat
+            </button>
+          </div>
+        )}
+
+        {/* SAVED OFFERS HISTORY EXPANDABLE PANEL */}
+        {showHistoryPanel && (
+          <div className="p-4 bg-slate-950/80 rounded-xl border border-sky-500/30 space-y-3 animate-fadeIn">
+            <div className="flex justify-between items-center border-b border-slate-800 pb-2">
+              <div className="flex items-center space-x-2">
+                <History className="w-4 h-4 text-sky-400" />
+                <span className="text-xs font-bold text-sky-300 uppercase tracking-wider">
+                  📜 KAYITLI GEÇMİŞ TEKLİFLER ARŞİVİ ({savedOffers.length} Teklif)
+                </span>
+              </div>
+
+              {savedOffers.length > 0 && (
+                <button
+                  onClick={handleClearAllOffers}
+                  className="text-[11px] text-red-400 hover:text-red-300 font-bold"
+                >
+                  Tümünü Temizle
+                </button>
+              )}
+            </div>
+
+            {savedOffers.length === 0 ? (
+              <p className="text-xs text-slate-500 py-3 text-center">
+                Henüz kaydedilmiş teklif bulunmuyor. Yukarıdaki "Teklifi Kaydet" butonuna basarak tekliflerinizi tarayıcınıza kaydedebilirsiniz.
+              </p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs text-left border-collapse border border-slate-800">
+                  <thead className="bg-slate-900 text-slate-300 font-bold uppercase text-[11px]">
+                    <tr>
+                      <th className="p-2 border border-slate-800">Teklif No</th>
+                      <th className="p-2 border border-slate-800">Tarih</th>
+                      <th className="p-2 border border-slate-800">Müşteri Adı</th>
+                      <th className="p-2 border border-slate-800">Proje / Şantiye</th>
+                      <th className="p-2 border border-slate-800 text-right">Toplam (m³)</th>
+                      <th className="p-2 border border-slate-800 text-right">Genel Toplam (KDV Dahil)</th>
+                      <th className="p-2 border border-slate-800 text-center">İşlemler</th>
+                    </tr>
+                  </thead>
+                  <tbody className="font-mono text-slate-300">
+                    {savedOffers.map((off) => (
+                      <tr key={off.id} className="border-b border-slate-800 hover:bg-slate-900/50">
+                        <td className="p-2 border border-slate-800 font-bold text-amber-400">{off.offerNo}</td>
+                        <td className="p-2 border border-slate-800 font-sans text-slate-400">{off.offerDate}</td>
+                        <td className="p-2 border border-slate-800 font-sans font-bold text-white">{off.customerName}</td>
+                        <td className="p-2 border border-slate-800 font-sans text-slate-300">{off.projectName}</td>
+                        <td className="p-2 border border-slate-800 text-right font-bold">{off.totalVolume?.toLocaleString('tr-TR')} m³</td>
+                        <td className="p-2 border border-slate-800 text-right font-bold text-emerald-400">{formatCurrency(off.grandTotal)}</td>
+                        <td className="p-2 border border-slate-800 text-center">
+                          <div className="flex items-center justify-center space-x-2">
+                            <button
+                              onClick={() => handleLoadOffer(off)}
+                              className="px-2 py-1 bg-sky-600/30 hover:bg-sky-600/50 text-sky-300 rounded text-[11px] font-sans font-bold transition"
+                              title="Bu teklif verilerini forma yükle"
+                            >
+                              Forma Yükle
+                            </button>
+                            <button
+                              onClick={() => handleDeleteOffer(off.id)}
+                              className="p-1 text-red-400 hover:bg-red-500/20 rounded"
+                              title="Teklifi Sil"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Input Details */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs mb-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 text-xs">
+          <div>
+            <label className="block text-slate-400 font-semibold mb-1">Teklif No (Otomatik Sıralı)</label>
+            <input
+              type="text"
+              value={currentOfferNo}
+              onChange={(e) => setCurrentOfferNo(e.target.value)}
+              className="w-full bg-slate-950 text-amber-400 font-mono font-bold px-3 py-1.5 rounded border border-slate-800 focus:border-amber-500"
+              title="Kaydet butonuna her bastığınızda otomatik artar, isterseniz elle değiştirebilirsiniz."
+            />
+          </div>
+
           <div>
             <label className="block text-slate-400 font-semibold mb-1">Müşteri / Firma Adı</label>
             <input
@@ -248,7 +491,7 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
             </p>
           </div>
           <div className="text-left sm:text-right text-xs font-mono shrink-0 bg-slate-100 p-3 rounded-lg border border-slate-300 print:bg-transparent print:border-none print:p-0">
-            <p className="font-black text-slate-950 text-sm">Teklif No: BT-{offerDate.replace(/-/g, '')}-01</p>
+            <p className="font-black text-slate-950 text-sm">Teklif No: {currentOfferNo}</p>
             <p className="text-slate-800 font-bold mt-1">Tarih: {new Date(offerDate).toLocaleDateString('tr-TR')}</p>
             <p className="text-slate-700 font-semibold">Geçerlilik: {validityDays} Gün</p>
           </div>
@@ -286,7 +529,10 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
                   <td className="p-3 border border-slate-300 font-black font-sans text-sm text-slate-950">{item.class}</td>
                   <td className="p-3 border border-slate-300 font-sans font-bold text-slate-800">{item.type}</td>
                   <td className="p-3 border border-slate-300 text-right font-black text-slate-950">{item.volume.toLocaleString('tr-TR')} m³</td>
-                  <td className="p-3 border border-slate-300 text-right font-bold text-slate-900">{formatCurrency(item.unitPriceExcl)}</td>
+                  <td className="p-3 border border-slate-300 text-right font-bold text-slate-900">
+                    {formatCurrency(item.unitPriceExcl)}
+                    {item.isCustom && <span className="text-[10px] text-emerald-700 font-sans ml-1 no-print">(Özel)</span>}
+                  </td>
                   <td className="p-3 border border-slate-300 text-right font-black text-slate-950 text-sm">{formatCurrency(item.itemTotalExcl)}</td>
                 </tr>
               ))}
