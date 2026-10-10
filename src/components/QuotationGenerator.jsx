@@ -662,11 +662,13 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
                 MALAKLAR İNŞAAT TAAHHÜT GIDA MADEN SANAYİ VE TİCARET A.Ş.
               </h1>
               <p className="text-xs font-bold text-amber-800 tracking-wide mt-0.5 uppercase">
-                HAZIR BETON SANTRAİLİ ÜRETİM & SEVKİYAT KOORDİNATÖRLÜĞÜ
+                HAZIR BETON SANTRALİ ÜRETİM & SEVKİYAT KOORDİNATÖRLÜĞÜ
               </p>
-              <p className="text-xs text-slate-700 font-medium mt-1">
-                Adres: Selçuklu Mah. M27V+MQ, 03300 Bolvadin / AFYONKARAHİSAR
-              </p>
+              <div className="text-[11px] text-slate-700 font-medium mt-1 space-y-0.5">
+                <p><strong>Merkez Adres:</strong> Susuz Beldesi, Sakarya Mahallesi, Hayat Caddesi No:9 AFYONKARAHİSAR</p>
+                <p><strong>Tesis / Santral:</strong> Selçuklu Mah. M27V+MQ, 03300 Bolvadin / AFYONKARAHİSAR</p>
+                <p><strong>Tel:</strong> 0.272.221.12.12 – 0.272.221.15.75 &nbsp;|&nbsp; <strong>V.D. / No:</strong> TINAZTEPE V.D. - 611 052 27 44</p>
+              </div>
             </div>
           </div>
           <div className="text-left sm:text-right text-xs font-mono shrink-0 bg-slate-100 p-3 rounded-lg border border-slate-300 print:bg-transparent print:border-none print:p-0">
@@ -773,7 +775,8 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
           <div className="grid grid-cols-2 gap-12 pt-10 text-center text-xs font-bold text-slate-950">
             <div>
               <p className="font-black text-slate-950">MALAKLAR İNŞAAT TAAHHÜT GIDA MADEN SANAYİ VE TİCARET A.Ş.</p>
-              <div className="h-12"></div>
+              <p className="text-[10px] text-slate-600 font-semibold font-mono mt-0.5">TINAZTEPE V.D. - 611 052 27 44</p>
+              <div className="h-10"></div>
               <p className="border-t border-slate-400 pt-1 text-[11px] text-slate-700 font-semibold">Yetkili İmza & Kaşe</p>
             </div>
             <div>
