@@ -59,15 +59,28 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
         const cloudOffers = cloudRes.offers || [];
         const cloudCounter = cloudRes.counter || 1;
 
-        setSavedOffers(prevLocal => {
-          const localIds = new Set(prevLocal.map(o => o.id));
-          const newFromCloud = cloudOffers.filter(o => !localIds.has(o.id));
-          const merged = [...newFromCloud, ...prevLocal];
+        if (cloudOffers.length > 0) {
+          setSavedOffers(cloudOffers);
           try {
-            localStorage.setItem(SAVED_OFFERS_KEY, JSON.stringify(merged));
+            localStorage.setItem(SAVED_OFFERS_KEY, JSON.stringify(cloudOffers));
           } catch (e) {}
-          return merged;
-        });
+
+          // If the form currently has default placeholder customer, auto-load the most recent offer from cloud
+          if (customerName === 'YILMAZ İNŞAAT A.Ş.') {
+            const latest = cloudOffers[0];
+            if (latest) {
+              setCurrentOfferNo(latest.offerNo);
+              setCustomerName(latest.customerName || '');
+              setProjectName(latest.projectName || '');
+              setOfferDate(latest.offerDate || new Date().toISOString().split('T')[0]);
+              setValidityDays(latest.validityDays || 15);
+              setSelectedProfitTier(latest.selectedProfitTier || 'tier2');
+              setLineItems(latest.lineItems || []);
+              setSaveSuccessMsg(`☁️ Buluttan ${cloudOffers.length} adet teklif eşitlendi. En son teklif #${latest.offerNo} forma yüklendi.`);
+              setTimeout(() => setSaveSuccessMsg(null), 5000);
+            }
+          }
+        }
 
         setOfferCounter(prevCounter => {
           const maxCounter = Math.max(prevCounter, cloudCounter);
@@ -298,15 +311,17 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
       const cloudOffers = cloudRes.offers || [];
       const cloudCounter = cloudRes.counter || 1;
 
-      setSavedOffers(prevLocal => {
-        const localIds = new Set(prevLocal.map(o => o.id));
-        const newFromCloud = cloudOffers.filter(o => !localIds.has(o.id));
-        const merged = [...newFromCloud, ...prevLocal];
+      if (cloudOffers.length > 0) {
+        setSavedOffers(cloudOffers);
         try {
-          localStorage.setItem(SAVED_OFFERS_KEY, JSON.stringify(merged));
+          localStorage.setItem(SAVED_OFFERS_KEY, JSON.stringify(cloudOffers));
         } catch (e) {}
-        return merged;
-      });
+
+        const latest = cloudOffers[0];
+        if (latest) {
+          handleLoadOffer(latest);
+        }
+      }
 
       setOfferCounter(prevCounter => {
         const maxCounter = Math.max(prevCounter, cloudCounter);
@@ -316,10 +331,10 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
         return maxCounter;
       });
 
-      setSaveSuccessMsg('☁️ Canlı bulut senkronizasyonu tamamlandı. Tüm cihazların teklifleri eşitlendi.');
+      setSaveSuccessMsg(`☁️ Canlı bulut senkronizasyonu tamamlandı. ${cloudOffers.length} adet teklif eşitlendi.`);
       setTimeout(() => setSaveSuccessMsg(null), 5000);
     } else {
-      alert('Bulut senkronizasyonunda hata oluştu.');
+      alert('Bulut senkronizasyonunda hata oluştu: ' + (cloudRes.error || 'Bilinmeyen hata'));
     }
     setIsCloudSyncing(false);
   };

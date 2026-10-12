@@ -3,23 +3,23 @@
  */
 export async function fetchLiveRates() {
   try {
-    // Try Vite API middleware first
     const res = await fetch('/api/live-rates');
-    if (res.ok) {
+    const contentType = res.headers.get('content-type') || '';
+    if (res.ok && contentType.includes('application/json')) {
       const data = await res.json();
-      if (data.success) {
+      if (data && data.success) {
         return data;
       }
     }
   } catch (err) {
-    console.warn('Backend API proxy unreachable, attempting direct client fetch fallback...', err);
+    console.warn('API route unreachable, falling back to direct client fetch...', err.message);
   }
 
   // Fallback direct client fetch
   let usdRate = 49.34;
-  let mazotPriceKdvDahil = 95.50;
-  let mazotKdvHaric = 79.58;
-  let dateStr = new Date().toLocaleString('tr-TR');
+  let mazotPriceKdvDahil = 98.88; // Güncel Opet Bolvadin / Afyon Pompa Fiyatı
+  let mazotKdvHaric = 82.40;
+  let dateStr = new Date().toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' });
 
   try {
     const usdRes = await fetch('https://open.er-api.com/v6/latest/USD');
@@ -30,7 +30,7 @@ export async function fetchLiveRates() {
       }
     }
   } catch (e) {
-    console.error('Client USD fetch error:', e);
+    console.error('Client USD fetch error:', e.message);
   }
 
   return {
@@ -38,7 +38,7 @@ export async function fetchLiveRates() {
     dolarKuru: usdRate,
     mazotFiyati: mazotPriceKdvDahil,
     mazotKdvHaric: mazotKdvHaric,
-    source: 'TCMB & Canlı Piyasa Servisleri',
+    source: 'TCMB & Opet (Bolvadin / Afyonkarahisar)',
     updatedAt: dateStr
   };
 }
