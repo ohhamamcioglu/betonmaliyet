@@ -56,8 +56,8 @@ export const DEFAULT_INPUTS = {
 export const DEFAULT_RECIPES = {
   'C 16': { cimento: 170, agrega: 1940, katkiOverride: 1.9 },
   'C 20': { cimento: 230, agrega: 1868.4 },
-  'C 25': { cimento: 300, agrega: 1939 },
-  'C 30': { cimento: 340, agrega: 1892 },
+  'C 25': { cimento: 290, agrega: 1939 },
+  'C 30': { cimento: 330, agrega: 1892 },
   'C 35': { cimento: 370, agrega: 1859 },
   'C 40': { cimento: 410, agrega: 1819 },
 };
