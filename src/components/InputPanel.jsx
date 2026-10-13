@@ -160,19 +160,25 @@ export default function InputPanel({ inputs, setInputs, onFetchLiveRates, isFetc
           <div className="bg-slate-950/80 p-3 rounded-xl border border-amber-500/40 focus-within:border-amber-400 transition-all relative">
             <div className="flex justify-between items-center mb-1">
               <label className="block text-xs font-bold text-sky-300">
-                Mazot (Motorin) Fiyatı
+                Mazot Fiyatı <span className="text-amber-400 font-extrabold">(KDV Hariç)</span>
               </label>
-              <span className="text-[10px] text-sky-400 font-bold bg-sky-500/10 px-1 rounded">Canlı</span>
+              <span className="text-[10px] text-sky-400 font-bold bg-sky-500/10 px-1 rounded">Maliyete Giren</span>
             </div>
             <div className="flex items-center space-x-2">
               <input
                 type="number"
-                step="0.1"
+                step="0.01"
                 value={inputs.mazotFiyati ?? ''}
                 onChange={(e) => handleChange('mazotFiyati', e.target.value)}
                 className="w-full bg-slate-900 text-white font-mono font-bold text-sm px-2.5 py-1.5 rounded border border-amber-500/30 focus:outline-none focus:ring-1 focus:ring-sky-400"
               />
               <span className="text-xs font-semibold text-slate-400 whitespace-nowrap">TL / litre</span>
+            </div>
+            <div className="mt-1.5 flex justify-between items-center text-[10.5px] text-slate-400 font-mono bg-slate-900/60 px-2 py-0.5 rounded">
+              <span>Pompa Satış (KDV Dahil):</span>
+              <span className="text-amber-300 font-bold">
+                {inputs.mazotFiyati ? (Number(inputs.mazotFiyati) * 1.20).toFixed(2) : '-'} ₺/L
+              </span>
             </div>
           </div>
 

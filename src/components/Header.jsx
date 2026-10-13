@@ -101,7 +101,7 @@ export default function Header({
         {lastRatesInfo && (
           <div className="mt-3 px-3 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-300 text-xs flex justify-between items-center font-mono">
             <span>
-              ✅ <strong>Canlı Güncelleme Başarılı:</strong> Dolar/TL: <strong>{lastRatesInfo.dolarKuru} ₺</strong> | Mazot (KDV Dahil): <strong>{lastRatesInfo.mazotFiyati} ₺/L</strong> (KDV Hariç: {lastRatesInfo.mazotKdvHaric} ₺)
+              ✅ <strong>Canlı Güncelleme Başarılı:</strong> Dolar/TL: <strong>{lastRatesInfo.dolarKuru} ₺</strong> | Mazot (KDV Hariç - Maliyet): <strong>{lastRatesInfo.mazotKdvHaric || (lastRatesInfo.mazotFiyati > 90 ? (lastRatesInfo.mazotFiyati / 1.20).toFixed(2) : lastRatesInfo.mazotFiyati)} ₺/L</strong> <span className="text-slate-400 font-sans text-[11px]">(Pompa KDV Dahil: {lastRatesInfo.mazotKdvDahil || (lastRatesInfo.mazotFiyati > 90 ? lastRatesInfo.mazotFiyati : (lastRatesInfo.mazotFiyati * 1.20).toFixed(2))} ₺)</span>
             </span>
             <span className="text-[10px] text-sky-400/80 font-sans">
               {lastRatesInfo.updatedAt} • {lastRatesInfo.source}

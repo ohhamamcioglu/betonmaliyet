@@ -780,7 +780,7 @@ export default function QuotationGenerator({ calculatedData, inputs }) {
           <p className="font-extrabold text-slate-950 uppercase text-xs">Teklif Şartları & Genel Esaslar:</p>
           <ul className="list-disc list-inside space-y-1.5 text-slate-700 font-medium">
             <li className="leading-relaxed">
-              <strong>Hammadde & Fiyat Farkı Esası:</strong> İşbu teklifte belirtilen birim fiyatlar, teklif tarihindeki güncel <strong>çimento hammadde fiyatı ({inputs.cimentoFiyati.toLocaleString('tr-TR')} TL/Ton)</strong> ve <strong>motorin yakıt fiyatı ({inputs.mazotFiyati.toFixed(2)} TL/Litre)</strong> baz alınarak hesaplanmıştır. Sözleşme veya teslimat sürecinde hammadde ve yakıt fiyatlarında meydana gelebilecek değişiklikler, ilgili beton sınıfının reçete dozaj oranları ve nakliye mesafeleri doğrultusunda birim fiyatlara aynen fiyat farkı olarak eklenecektir.
+              <strong>Hammadde & Fiyat Farkı Esası:</strong> İşbu teklifte belirtilen birim fiyatlar, teklif tarihindeki güncel <strong>çimento hammadde fiyatı ({inputs.cimentoFiyati.toLocaleString('tr-TR')} TL/Ton)</strong> ve <strong>motorin yakıt fiyatı ({inputs.mazotFiyati.toFixed(2)} TL/Litre KDV Hariç)</strong> baz alınarak hesaplanmıştır. Sözleşme veya teslimat sürecinde hammadde ve yakıt fiyatlarında meydana gelebilecek değişiklikler, ilgili beton sınıfının reçete dozaj oranları ve nakliye mesafeleri doğrultusunda birim fiyatlara aynen fiyat farkı olarak eklenecektir.
             </li>
             <li>Beton dökümü öncesinde zemin, mikser yanaşma yolu ve kalıp kontrolü şantiye yetkilisi tarafından sağlanmalıdır.</li>
             <li>Pompalı dökümlerde araç bekleme süreleri standart 45 dakikayı aşmamalıdır.</li>

@@ -36,8 +36,9 @@ export async function fetchLiveRates() {
   return {
     success: true,
     dolarKuru: usdRate,
-    mazotFiyati: mazotPriceKdvDahil,
+    mazotFiyati: mazotKdvHaric, // KDV Hariç net maliyet
     mazotKdvHaric: mazotKdvHaric,
+    mazotKdvDahil: mazotPriceKdvDahil,
     source: 'TCMB & Opet (Bolvadin / Afyonkarahisar)',
     updatedAt: dateStr
   };

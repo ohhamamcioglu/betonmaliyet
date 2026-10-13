@@ -18,7 +18,8 @@ import {
   DollarSign,
   FileSpreadsheet,
   TrendingUp,
-  Cpu
+  Cpu,
+  AlertCircle
 } from 'lucide-react';
 import { CONCRETE_CLASSES, PRODUCTION_TYPES } from '../data/defaultData';
 import { formatCurrency, formatPercent } from '../utils/calculator';
@@ -103,11 +104,26 @@ export default function CalculationGuide({ inputs, recipes, calculatedData }) {
           <div className="flex items-center space-x-3 bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-xs">
             <div className="text-right">
               <p className="text-[10px] text-slate-400 uppercase font-semibold">Aktif Dolar & Mazot</p>
-              <p className="font-mono font-bold text-emerald-400 text-sm">{dolarKuru.toFixed(2)} ₺ / $ &nbsp;|&nbsp; {mazotFiyati.toFixed(2)} ₺/L</p>
+              <p className="font-mono font-bold text-emerald-400 text-sm">{dolarKuru.toFixed(2)} ₺ / $ &nbsp;|&nbsp; {mazotFiyati.toFixed(2)} ₺/L <span className="text-[11px] text-amber-300 font-sans">(KDV Hariç)</span></p>
             </div>
             <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
               <TrendingUp className="w-5 h-5" />
             </div>
+          </div>
+        </div>
+
+        {/* VERGİ VE MUHASEBE UYARISI: MAZOT KDV HARİÇ HESAPLANIR */}
+        <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-amber-500/15 via-slate-900 to-sky-500/15 border border-amber-500/30 flex items-start space-x-3.5 text-xs shadow-md">
+          <div className="p-2 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0 mt-0.5">
+            <AlertCircle className="w-5 h-5 text-amber-400" />
+          </div>
+          <div className="space-y-1">
+            <p className="font-bold text-amber-300 text-sm">
+              💡 Vergi & Maliyet Muhasebesi Kuralı: Mazot Maliyete Neden "KDV Hariç" Girer?
+            </p>
+            <p className="text-slate-300 leading-relaxed text-[11.5px]">
+              Tüm ticari işletmeler ve hazır beton santralleri satın aldıkları akaryakıtın faturasındaki <strong>%20 KDV tutarını 'İndirilecek KDV' olarak mahsup eder (vergiden düşer)</strong>. Bu nedenle hazır beton birim maliyet analizine akaryakıtın pompa satış fiyatı değil, <strong>KDV Hariç net birim maliyeti</strong> ({mazotFiyati.toFixed(2)} ₺/L) girer (Pompa perakende: {Number((mazotFiyati * 1.20).toFixed(2))} ₺/L). Akaryakıt pompa fiyatıyla maliyetlendirilirse maliyet yapay olarak şişer. Sistem tüm kâr paylarını bu net taban maliyete ekledikten sonra en son nihai satış faturasında müşteriye %20 KDV tek seferde yansıtılır.
+            </p>
           </div>
         </div>
       </div>
@@ -229,7 +245,7 @@ export default function CalculationGuide({ inputs, recipes, calculatedData }) {
                   <span className="font-bold text-white">{formatCurrency(costs.agregaNakliyeTL)}</span>
                 </div>
                 <p className="text-[9.5px] text-slate-500 font-sans leading-tight">
-                  Formül: (0.4 L/km × 2 × {agregaMesafesi} km / 38 Ton) × {mazotFiyati}₺ × {agregaKg/1000} Ton × 1.15
+                  Formül: (0.4 L/km × 2 × {agregaMesafesi} km / 38 Ton) × {mazotFiyati}₺ (KDV Hariç) × {agregaKg/1000} Ton × 1.15
                 </p>
               </div>
 
@@ -243,7 +259,7 @@ export default function CalculationGuide({ inputs, recipes, calculatedData }) {
                 <p className="text-[9.5px] text-slate-500 font-sans leading-tight">
                   {selectedType === 'SANTRAL ALTI' 
                     ? 'Santral altı teslimde mikser yakıtı sıfırdır.' 
-                    : `Formül: (0.7 L/km × 2 × ${dokumMesafesi} km / ${mikserKapasitesi} m³) × ${mazotFiyati}₺`}
+                    : `Formül: (0.7 L/km × 2 × ${dokumMesafesi} km / ${mikserKapasitesi} m³) × ${mazotFiyati}₺ (KDV Hariç)`}
                 </p>
               </div>
             </div>
@@ -511,7 +527,7 @@ export default function CalculationGuide({ inputs, recipes, calculatedData }) {
                 <span className="font-mono text-[11px] bg-slate-900 px-2 py-0.5 rounded">0.70 L / km</span>
               </div>
               <div className="p-2 bg-slate-900 rounded font-mono text-[11px] text-slate-200">
-                Mikser Mazotu = (0.70 × 2 × Döküm Mesafesi / Mikser Kapasitesi) × Mazot Fiyatı
+                Mikser Mazotu = (0.70 × 2 × Döküm Mesafesi / Mikser Kapasitesi) × Mazot Fiyatı (KDV Hariç)
               </div>
               <p className="text-[11px] text-slate-400 leading-relaxed">
                 • <strong>Neden 2 ile çarpılır?</strong> Mikser şantiyeye betonu götürüp santrale boş döner (gidiş-dönüş toplam mesafe).<br />
@@ -526,7 +542,7 @@ export default function CalculationGuide({ inputs, recipes, calculatedData }) {
                 <span className="font-mono text-[11px] bg-slate-900 px-2 py-0.5 rounded">0.40 L / km &nbsp;|&nbsp; 38 Ton</span>
               </div>
               <div className="p-2 bg-slate-900 rounded font-mono text-[11px] text-slate-200">
-                Agrega Nakliyesi = (0.40 × 2 × Agrega Mesafesi / 38) × Mazot Fiyatı × (Agrega kg / 1000) × 1.15
+                Agrega Nakliyesi = (0.40 × 2 × Agrega Mesafesi / 38) × Mazot Fiyatı (KDV Hariç) × (Agrega kg / 1000) × 1.15
               </div>
               <p className="text-[11px] text-slate-400 leading-relaxed">
                 • 38 tonluk damperli kamyonların gidiş-dönüş yakıt maliyeti hesaplanır.<br />
@@ -541,8 +557,8 @@ export default function CalculationGuide({ inputs, recipes, calculatedData }) {
                 <span className="font-mono text-[11px] bg-slate-900 px-2 py-0.5 rounded">Kepçe: 0.35 &nbsp;|&nbsp; Pompa: 0.73 L/m³</span>
               </div>
               <div className="p-2 bg-slate-900 rounded font-mono text-[11px] text-slate-200">
-                Kepçe Mazotu = 0.35 L/m³ × Mazot Fiyatı<br />
-                Pompa Mazotu = 0.73 L/m³ × Mazot Fiyatı
+                Kepçe Mazotu = 0.35 L/m³ × Mazot Fiyatı (KDV Hariç)<br />
+                Pompa Mazotu = 0.73 L/m³ × Mazot Fiyatı (KDV Hariç)
               </div>
               <p className="text-[11px] text-slate-400 leading-relaxed">
                 • Kepçe (Loader) agreganın bunkerlere beslenmesi sırasında m³ başına 0.35 litre yakıt tüketir.<br />

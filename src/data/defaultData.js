@@ -6,7 +6,7 @@ export const DEFAULT_INPUTS = {
   agregaFiyati: 200,       // TL / ton
   katkiFiyatiUSD: 0.62,     // $ / kg
   dolarKuru: 49.16,         // TL / $
-  mazotFiyati: 94.995,      // TL / litre
+  mazotFiyati: 82.40,       // TL / litre (KDV Hariç net maliyet - Pompa: 98.88 TL/L)
   elektrikFiyati: 2.92,     // TL / kWh
   suFiyati: 12.175,         // TL / ton
   isciMaasi: 70000,         // TL / kişi / ay (Maaş + SGK)

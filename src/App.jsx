@@ -21,7 +21,13 @@ const LAST_RATES_KEY = 'beton_last_rates_info_v1';
 const getInitialInputs = () => {
   try {
     const saved = localStorage.getItem(SAVED_INPUTS_KEY);
-    return saved ? { ...DEFAULT_INPUTS, ...JSON.parse(saved) } : DEFAULT_INPUTS;
+    if (!saved) return DEFAULT_INPUTS;
+    const parsed = JSON.parse(saved);
+    // If previously saved mazot was KDV Dahil (e.g. > 90), convert to KDV Hariç
+    if (parsed.mazotFiyati && parsed.mazotFiyati > 90) {
+      parsed.mazotFiyati = parseFloat((parsed.mazotFiyati / 1.20).toFixed(3));
+    }
+    return { ...DEFAULT_INPUTS, ...parsed };
   } catch {
     return DEFAULT_INPUTS;
   }
@@ -53,10 +59,12 @@ export default function App() {
       const data = await fetchLiveRates();
       if (data && data.success) {
         setInputs(prev => {
+          // Mazot birim maliyeti mutlaka KDV Hariç olmalıdır (firmalar KDV'yi mahsup eder)
+          const netMazot = data.mazotKdvHaric || (data.mazotFiyati ? (data.mazotFiyati > 90 ? parseFloat((data.mazotFiyati / 1.20).toFixed(3)) : data.mazotFiyati) : prev.mazotFiyati);
           const updated = {
             ...prev,
             dolarKuru: data.dolarKuru || prev.dolarKuru,
-            mazotFiyati: data.mazotFiyati || prev.mazotFiyati,
+            mazotFiyati: netMazot,
           };
           try {
             localStorage.setItem(SAVED_INPUTS_KEY, JSON.stringify(updated));
@@ -169,7 +177,8 @@ export default function App() {
         ['Agrega Fiyatı', inputs.agregaFiyati, 'TL / Ton', 'Ocak teslim agrega ton fiyatı'],
         ['Kimyasal Katkı Fiyatı (USD)', inputs.katkiFiyatiUSD, '$ / kg', 'İthal katkı fiyatı'],
         ['Dolar Kuru ($/TL)', inputs.dolarKuru, 'TL / $', 'Güncel TCMB / Piyasa Kuru'],
-        ['Mazot Fiyatı (KDV Dahil)', inputs.mazotFiyati, 'TL / Litre', 'Güncel akaryakıt pompası fiyatı'],
+        ['Mazot Fiyatı (KDV Hariç)', inputs.mazotFiyati, 'TL / Litre', 'Maliyet hesaplamasına giren KDV hariç net akaryakıt maliyeti'],
+        ['Mazot Pompa Satış Fiyatı (KDV Dahil)', Number((inputs.mazotFiyati * 1.20).toFixed(2)), 'TL / Litre', 'Akaryakıt istasyonu pompa perakende satış fiyatı'],
         ['Elektrik Fiyatı', inputs.elektrikFiyati, 'TL / kWh', 'Sanayi tarifesi elektrik birim fiyatı'],
         ['Su Fiyatı', inputs.suFiyati, 'TL / Ton', 'Tesis su maliyeti'],
         ['Personel Maaşı', inputs.isciMaasi, 'TL / Ay', 'Ortalama personel maliyeti'],

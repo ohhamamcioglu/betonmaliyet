@@ -71,8 +71,9 @@ export default async function handler(req, res) {
   return res.status(200).json({
     success: true,
     dolarKuru: usdRate,
-    mazotFiyati: mazotPriceKdvDahil,
+    mazotFiyati: mazotPriceKdvHaric,
     mazotKdvHaric: mazotPriceKdvHaric,
+    mazotKdvDahil: mazotPriceKdvDahil,
     source: `TCMB & ${fuelSource}`,
     updatedAt: dateStr
   });
