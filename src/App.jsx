@@ -311,6 +311,7 @@ export default function App() {
             <RecipeManager
               recipes={recipes}
               setRecipes={setRecipes}
+              onOpenMethodology={() => setActiveTab('methodology')}
             />
           </div>
         )}

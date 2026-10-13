@@ -110,7 +110,7 @@ export default function Header({
         )}
 
         {/* View Switcher Tabs */}
-        <div className="flex items-center space-x-1 mt-4 border-t border-slate-800/80 pt-2 no-print overflow-x-auto scrollbar-none">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-4 border-t border-slate-800/80 pt-2.5 no-print">
           {[
             { id: 'dashboard', label: '📊 Genel Bakış & Sorgulama' },
             { id: 'inputs', label: '💛 Maliyet Girdileri (Sarı Kutular)' },
@@ -118,18 +118,25 @@ export default function Header({
             { id: 'analytics', label: '📈 Maliyet Grafiği & Analiz' },
             { id: 'simulation', label: '⚡ Hassasiyet & Senaryo Analizi' },
             { id: 'recipes', label: '🧪 Reçete & Karışım Ayarları' },
-            { id: 'methodology', label: '📐 Hesaplama Yöntemi & Formüller' },
+            { id: 'methodology', label: '📐 Hesaplama Yöntemi & Formüller', isNew: true },
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-3.5 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap transition-colors ${
+              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1.5 ${
                 activeTab === tab.id
-                  ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm'
+                  : tab.isNew
+                    ? 'bg-sky-500/15 text-sky-300 border border-sky-500/30 hover:bg-sky-500/25'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-slate-800/60'
               }`}
             >
-              {tab.label}
+              <span>{tab.label}</span>
+              {tab.isNew && (
+                <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-full shadow-sm animate-pulse">
+                  YENİ
+                </span>
+              )}
             </button>
           ))}
         </div>

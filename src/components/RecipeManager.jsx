@@ -1,8 +1,8 @@
 import React from 'react';
-import { FlaskConical, RotateCcw } from 'lucide-react';
+import { FlaskConical, RotateCcw, Calculator, ArrowRight } from 'lucide-react';
 import { CONCRETE_CLASSES, DEFAULT_RECIPES } from '../data/defaultData';
 
-export default function RecipeManager({ recipes, setRecipes }) {
+export default function RecipeManager({ recipes, setRecipes, onOpenMethodology }) {
   
   const handleRecipeChange = (cls, field, value) => {
     if (value === '' || value === undefined) {
@@ -30,7 +30,7 @@ export default function RecipeManager({ recipes, setRecipes }) {
   };
 
   return (
-    <div className="glass-panel rounded-2xl p-6 border border-slate-800 bg-slate-900/90 shadow-xl space-y-6">
+    <div className="glass-panel rounded-2xl p-6 border border-slate-800 bg-slate-900/90 shadow-xl space-y-5">
       
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
@@ -48,13 +48,42 @@ export default function RecipeManager({ recipes, setRecipes }) {
           </div>
         </div>
 
-        <button
-          onClick={handleResetRecipes}
-          className="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
-        >
-          <RotateCcw className="w-3.5 h-3.5 mr-1.5 text-sky-400" />
-          Reçeteleri Sıfırla
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          {onOpenMethodology && (
+            <button
+              onClick={onOpenMethodology}
+              className="inline-flex items-center px-3.5 py-1.5 text-xs font-bold rounded-lg bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white shadow-md shadow-sky-500/20 transition active:scale-95"
+            >
+              <Calculator className="w-3.5 h-3.5 mr-1.5" />
+              📐 Hesaplama Yöntemi & Formüller
+            </button>
+          )}
+
+          <button
+            onClick={handleResetRecipes}
+            className="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
+          >
+            <RotateCcw className="w-3.5 h-3.5 mr-1.5 text-sky-400" />
+            Reçeteleri Sıfırla
+          </button>
+        </div>
+      </div>
+
+      {/* Informational Callout */}
+      <div className="p-3.5 rounded-xl bg-gradient-to-r from-sky-500/10 via-slate-900 to-indigo-500/10 border border-sky-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div className="flex items-center space-x-2.5 text-slate-300">
+          <Calculator className="w-4 h-4 text-sky-400 shrink-0" />
+          <span>Bu reçete dozajlarının nakliye, işçilik ve operasyon maliyetleriyle nasıl birleşip satış fiyatına dönüştüğünü adım adım görmek ister misiniz?</span>
+        </div>
+        {onOpenMethodology && (
+          <button
+            onClick={onOpenMethodology}
+            className="text-sky-400 hover:text-sky-300 font-bold underline whitespace-nowrap text-left sm:text-right flex items-center"
+          >
+            <span>Formül Rehberini İncele</span>
+            <ArrowRight className="w-3.5 h-3.5 ml-1" />
+          </button>
+        )}
       </div>
 
       {/* Recipe Cards Grid */}
