@@ -118,6 +118,7 @@ export default function Header({
             { id: 'analytics', label: '📈 Maliyet Grafiği & Analiz' },
             { id: 'simulation', label: '⚡ Hassasiyet & Senaryo Analizi' },
             { id: 'recipes', label: '🧪 Reçete & Karışım Ayarları' },
+            { id: 'methodology', label: '📐 Hesaplama Yöntemi & Formüller' },
           ].map((tab) => (
             <button
               key={tab.id}

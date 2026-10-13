@@ -9,6 +9,7 @@ import SensitivityAnalysis from './components/SensitivityAnalysis';
 import RecipeManager from './components/RecipeManager';
 import AdvancedSettingsModal from './components/AdvancedSettingsModal';
 import QuotationGenerator from './components/QuotationGenerator';
+import CalculationGuide from './components/CalculationGuide';
 
 import { DEFAULT_INPUTS, DEFAULT_RECIPES, CONCRETE_CLASSES, PRODUCTION_TYPES } from './data/defaultData';
 import { calculateConcreteCosts } from './utils/calculator';
@@ -314,7 +315,18 @@ export default function App() {
           </div>
         )}
 
-        {/* TAB 7: QUOTE (Müşteri Teklifi) */}
+        {/* TAB 7: METHODOLOGY (Hesaplama Yöntemi & Formüller) */}
+        {activeTab === 'methodology' && (
+          <div className="space-y-6 animate-fadeIn">
+            <CalculationGuide
+              inputs={inputs}
+              recipes={recipes}
+              calculatedData={calculatedData}
+            />
+          </div>
+        )}
+
+        {/* TAB 8: QUOTE (Müşteri Teklifi) */}
         {activeTab === 'quote' && (
           <div className="space-y-6 animate-fadeIn">
             <QuotationGenerator
