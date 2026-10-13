@@ -311,6 +311,8 @@ export default function App() {
             <RecipeManager
               recipes={recipes}
               setRecipes={setRecipes}
+              inputs={inputs}
+              calculatedData={calculatedData}
               onOpenMethodology={() => setActiveTab('methodology')}
             />
           </div>

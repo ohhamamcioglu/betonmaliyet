@@ -1,9 +1,17 @@
-import React from 'react';
-import { FlaskConical, RotateCcw, Calculator, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { FlaskConical, RotateCcw, Calculator, ArrowRight, BookOpen } from 'lucide-react';
 import { CONCRETE_CLASSES, DEFAULT_RECIPES } from '../data/defaultData';
+import CalculationGuide from './CalculationGuide';
 
-export default function RecipeManager({ recipes, setRecipes, onOpenMethodology }) {
-  
+export default function RecipeManager({ 
+  recipes, 
+  setRecipes, 
+  inputs, 
+  calculatedData, 
+  onOpenMethodology 
+}) {
+  const [subTab, setSubTab] = useState('recipes'); // 'recipes' | 'methodology'
+
   const handleRecipeChange = (cls, field, value) => {
     if (value === '' || value === undefined) {
       setRecipes(prev => ({
@@ -30,44 +38,85 @@ export default function RecipeManager({ recipes, setRecipes, onOpenMethodology }
   };
 
   return (
-    <div className="glass-panel rounded-2xl p-6 border border-slate-800 bg-slate-900/90 shadow-xl space-y-5">
-      
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
-        <div className="flex items-center space-x-3">
-          <div className="p-2 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20">
-            <FlaskConical className="w-5 h-5" />
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-white tracking-wide">
-              🧪 BETON REÇETE VE KARIŞIM HESAPLARI (1 m³ İÇİN MİKTARLAR)
-            </h2>
-            <p className="text-xs text-slate-400">
-              Her beton sınıfı için 1 m³ karışıma giren Çimento (kg) ve Agrega (kg) dozajlarını özelleştirin.
-            </p>
-          </div>
-        </div>
+    <div className="space-y-5">
+      {/* Top Dual Sub-Navigation */}
+      <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-xl bg-slate-950/80 border border-slate-800 shadow-md">
+        <button
+          onClick={() => setSubTab('recipes')}
+          className={`flex-1 sm:flex-initial inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
+            subTab === 'recipes'
+              ? 'bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-md shadow-sky-500/20'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+          }`}
+        >
+          <FlaskConical className="w-4 h-4 mr-2" />
+          🧪 1. Beton Reçete & Dozaj Tablosu
+        </button>
 
-        <div className="flex flex-wrap items-center gap-2">
-          {onOpenMethodology && (
-            <button
-              onClick={onOpenMethodology}
-              className="inline-flex items-center px-3.5 py-1.5 text-xs font-bold rounded-lg bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white shadow-md shadow-sky-500/20 transition active:scale-95"
-            >
-              <Calculator className="w-3.5 h-3.5 mr-1.5" />
-              📐 Hesaplama Yöntemi & Formüller
-            </button>
-          )}
-
-          <button
-            onClick={handleResetRecipes}
-            className="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
-          >
-            <RotateCcw className="w-3.5 h-3.5 mr-1.5 text-sky-400" />
-            Reçeteleri Sıfırla
-          </button>
-        </div>
+        <button
+          onClick={() => setSubTab('methodology')}
+          className={`flex-1 sm:flex-initial inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
+            subTab === 'methodology'
+              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-md shadow-amber-500/20'
+              : 'text-sky-300 hover:text-sky-200 bg-sky-950/40 border border-sky-500/30 hover:bg-sky-900/40'
+          }`}
+        >
+          <Calculator className="w-4 h-4 mr-2" />
+          📐 2. Hesaplama Yöntemi & Formül Rehberi
+          <span className="ml-2 text-[9px] font-black uppercase px-1.5 py-0.5 bg-sky-500 text-white rounded-full">
+            YENİ
+          </span>
+        </button>
       </div>
+
+      {/* SUBTAB 2: METHODOLOGY VIEW */}
+      {subTab === 'methodology' && inputs && (
+        <div className="animate-fadeIn">
+          <CalculationGuide 
+            inputs={inputs} 
+            recipes={recipes} 
+            calculatedData={calculatedData} 
+          />
+        </div>
+      )}
+
+      {/* SUBTAB 1: RECIPES VIEW */}
+      {subTab === 'recipes' && (
+        <div className="glass-panel rounded-2xl p-6 border border-slate-800 bg-slate-900/90 shadow-xl space-y-5 animate-fadeIn">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                <FlaskConical className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-white tracking-wide">
+                  🧪 BETON REÇETE VE KARIŞIM HESAPLARI (1 m³ İÇİN MİKTARLAR)
+                </h2>
+                <p className="text-xs text-slate-400">
+                  Her beton sınıfı için 1 m³ karışıma giren Çimento (kg) ve Agrega (kg) dozajlarını özelleştirin.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => setSubTab('methodology')}
+                className="inline-flex items-center px-3.5 py-1.5 text-xs font-bold rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 shadow-md shadow-amber-500/20 transition active:scale-95"
+              >
+                <Calculator className="w-3.5 h-3.5 mr-1.5" />
+                📐 Hesaplama Formüllerini Gör
+              </button>
+
+              <button
+                onClick={handleResetRecipes}
+                className="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
+              >
+                <RotateCcw className="w-3.5 h-3.5 mr-1.5 text-sky-400" />
+                Reçeteleri Sıfırla
+              </button>
+            </div>
+          </div>
 
       {/* Informational Callout */}
       <div className="p-3.5 rounded-xl bg-gradient-to-r from-sky-500/10 via-slate-900 to-indigo-500/10 border border-sky-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
@@ -143,7 +192,8 @@ export default function RecipeManager({ recipes, setRecipes, onOpenMethodology }
           );
         })}
       </div>
-
     </div>
+    )}
+  </div>
   );
 }

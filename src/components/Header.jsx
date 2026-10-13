@@ -112,12 +112,12 @@ export default function Header({
         {/* View Switcher Tabs */}
         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-4 border-t border-slate-800/80 pt-2.5 no-print">
           {[
-            { id: 'dashboard', label: '📊 Genel Bakış & Sorgulama' },
-            { id: 'inputs', label: '💛 Maliyet Girdileri (Sarı Kutular)' },
-            { id: 'matrix', label: '📋 Detaylı Fiyat Listesi Tablosu' },
-            { id: 'analytics', label: '📈 Maliyet Grafiği & Analiz' },
-            { id: 'simulation', label: '⚡ Hassasiyet & Senaryo Analizi' },
-            { id: 'recipes', label: '🧪 Reçete & Karışım Ayarları' },
+            { id: 'dashboard', label: '📊 Genel Bakış' },
+            { id: 'inputs', label: '💛 Maliyet Girdileri' },
+            { id: 'matrix', label: '📋 Fiyat Listesi' },
+            { id: 'analytics', label: '📈 Grafik & Dağılım' },
+            { id: 'simulation', label: '⚡ Hassasiyet Analizi' },
+            { id: 'recipes', label: '🧪 Reçete & Karışımlar' },
             { id: 'methodology', label: '📐 Hesaplama Yöntemi & Formüller', isNew: true },
           ].map((tab) => (
             <button
@@ -125,9 +125,11 @@ export default function Header({
               onClick={() => setActiveTab(tab.id)}
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1.5 ${
                 activeTab === tab.id
-                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm'
+                  ? tab.isNew
+                    ? 'bg-sky-500/25 text-sky-200 border border-sky-400 shadow-md ring-1 ring-sky-400/40'
+                    : 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm'
                   : tab.isNew
-                    ? 'bg-sky-500/15 text-sky-300 border border-sky-500/30 hover:bg-sky-500/25'
+                    ? 'bg-gradient-to-r from-sky-950/80 to-indigo-950/80 text-sky-300 border border-sky-500/50 hover:border-sky-400 hover:bg-sky-900/40 shadow-sm'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-slate-800/60'
               }`}
             >
